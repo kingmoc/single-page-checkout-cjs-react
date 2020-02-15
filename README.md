@@ -106,16 +106,14 @@ Here's a look at the ProductCard Component where I'm parsing the data I need for
 
 ```javascript
 const ProductCard = ({product}) => {
- 
+   
     return (
-        // <Grid.Column width={5}>
-            <Card 
-                image={product.media.source}
-                header={product.name}
-                meta={product.price.formatted_with_symbol}
-                description={product.description.replace(/(<([^>]+)>)/ig,"")}
-            />
-        // </Grid.Column>
+        <Card 
+            image={product.media.source}
+            header={product.name}
+            meta={product.price.formatted_with_symbol}
+            description={product.description.replace(/(<([^>]+)>)/ig,"")}
+        />
     );
 };
 ```
