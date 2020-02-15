@@ -106,7 +106,7 @@ Here's a look at the ProductCard Component where I'm parsing the data I need for
 
 ```javascript
 const ProductCard = ({product}) => {
-    console.log(product, 'props from Container')
+ 
     return (
         // <Grid.Column width={5}>
             <Card 
