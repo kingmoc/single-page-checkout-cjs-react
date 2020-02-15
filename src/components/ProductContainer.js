@@ -9,7 +9,7 @@ const ProductContainer = () => {
     const [products, setProducts] = useState([])
 
     useEffect(() => {
-        const commerce = new Commerce('pk_test_17783a8bca56c22cbeb55accde3d1c62748bda930b70c')
+        const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
         commerce.products.list()
           .then(res => {
             setProducts(res.data)
