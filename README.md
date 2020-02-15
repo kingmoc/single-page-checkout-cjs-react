@@ -35,7 +35,7 @@ It should be noted that there are two main components, chec (dashboard) and comm
 
 ### STEP 2. React Time! (Getting your App setup):
 
-This is where you fun begins!  This example was done using CRA ([create-react-app](https://create-react-app.dev/docs/getting-started/)).  If you're familiar with React, then you know all about CRA.  If you don't want to fire up a project from scratch, you can fork and clone this repository (make sure to navigate to the proper folder) and run: 
+This is where the fun begins!  This example was done using CRA ([create-react-app](https://create-react-app.dev/docs/getting-started/)).  If you're familiar with React, then you know all about CRA.  If you don't want to fire up a project from scratch, you can fork and clone this repository (make sure to navigate to the proper folder) and run: 
 
 `yarn install or npm install`
 
