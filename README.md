@@ -7,7 +7,7 @@ A quick guide that shows you how to display a list of products using React.js & 
 ![](src/img/home-screen-shot.JPG)
 
 ## Overview
-The point of this guide is to help developers get familiar with using the Commerce.js SDK in conjunction with React.  Commerce.js is a powerful tool/resource that gives you the ability to build custom ecommerce sites without the headache of building out a lot of the complex functionality that comes along with ecommerce.  This means less experienced developers or eager online entrepreneurs can use these tools and build a more controlled and customized online store without relying on the big players like Shopify. Let's dive in! 
+The point of this guide is to help developers get familiar with using the Commerce.js SDK in conjunction with React.  Commerce.js is a powerful tool/resource that gives you the ability to build custom eCommerce sites without the headache of building out a lot of the complex functionality that comes along with eCommerce.  This means less experienced developers or eager online entrepreneurs can use these tools and build a more controlled and customized online store without relying on the big players like Shopify. Let's dive in! 
 
 #### This guide will cover: 
 
@@ -16,7 +16,7 @@ The point of this guide is to help developers get familiar with using the Commer
 3. Implementing Commerce.js in a React App
 4. Displaying a list of products on the screen
 
-*This guide will not go into detail about other features/functionality within an ecommerce site such as: adding to cart, product page, checking out etc ... It will simply give a blueprint to how you can display a list of products specifically with React.* 
+*This guide will not go into detail about other features/functionality within an eCommerce site such as: adding to cart, product page, checking out etc ... It will simply give a blueprint to how you can display a list of products specifically with React.* 
 
 ### Requirements/Prerequisites
 
@@ -29,7 +29,7 @@ The point of this guide is to help developers get familiar with using the Commer
 
 ### STEP 1. Create an account and upload Product Info:
 
-It should be noted that there are two main components, chec (dashboard) and commerce.js SDK.  Think of chec as the power, the source of all your customer data, transactions - things of that nature.  Think of the SDK as your way to communicate with your data.  You'll need to create an account [HERE](https://dashboard.chec.io/signup) - once logged in, navigate to products! The only product data you need to get started is: **Name, Image, Price, Description.** 
+It should be noted that there are two main components, Chec (dashboard) and Commerce.js SDK.  Think of chec as the power, the source of all your customer data, transactions - things of that nature.  Think of the SDK as your way to communicate with your data.  You'll need to create an account [HERE](https://dashboard.chec.io/signup) - once logged in, navigate to products! The only product data you need to get started is: **Name, Image, Price, Description.** 
 
 ![](src/img/products-list.JPG)
 
@@ -39,7 +39,7 @@ This is where the fun begins!  This example was done using CRA ([create-react-ap
 
 `yarn install or npm install`
 
-This will install the necessary dependencies needed for this project.  This also includes the package needed for the commerce.js SDK. Once installed run `yarn start` to run the app using react's development server.  
+This will install the necessary dependencies needed for this project.  This also includes the package needed for the Commerce.js SDK. Once installed run `yarn start` to run the app using react's development server.  
 
 ##### Installing Commerce.js manually
 
@@ -120,7 +120,7 @@ const ProductCard = ({product}) => {
 
 #### Conclusion 
 
-Well there you have it.  A quick guide to getting your products to display using React.  As you can see, it doesn't take much to get some products listed on your site.  Commerce.js has done their best to make building an ecommerce site fun and easy.  I really hope this guide helps get you started with whatever project you hope build.
+Well there you have it.  A quick guide to getting your products to display using React.  As you can see, it doesn't take much to get some products listed on your site.  Commerce.js has done their best to make building an eCommerce site fun and easy.  I really hope this guide helps get you started with whatever project you hope build.
 
 [LIVE DEMO](https://product-list-cjs-react.netlify.com/)
 
