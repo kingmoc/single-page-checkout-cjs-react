@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Grid, Image, Button, Icon, Dropdown } from 'semantic-ui-react';
 
-const ProductCard = ({product}) => {
+const ProductCard = (props) => {
     // console.log(product, 'props from Container')
 
     const [sizes, setSizes] = useState([])
@@ -9,7 +9,7 @@ const ProductCard = ({product}) => {
 
     useEffect(() => {        
         
-        let finalSizeArray = product.variants[0].options.map(option => {
+        let finalSizeArray = props.product.variants[0].options.map(option => {
             let sizeInfo = {}
 
             sizeInfo.key = option.name
@@ -23,22 +23,16 @@ const ProductCard = ({product}) => {
     }, [])
 
     const handleSize = (e, {value}) => {
-        setVariantInfo({[product.variants[0].id]: value})
+        setVariantInfo({[props.product.variants[0].id]: value})
     }
-
-    const addToCart = e => {
-        e.preventDefault()
-        console.log(variantInfo, 'works!!!')
-    }
-
 
     return (
         <Card>
-            <Image src={product.media.source} />
+            <Image src={props.product.media.source} />
             <Card.Content>
-                <Card.Header>{product.name}</Card.Header>
-                <Card.Meta>{product.price.formatted_with_symbol}</Card.Meta>
-                <Card.Description>{product.description.replace(/(<([^>]+)>)/ig,"")}</Card.Description>
+                <Card.Header>{props.product.name}</Card.Header>
+                <Card.Meta>{props.product.price.formatted_with_symbol}</Card.Meta>
+                <Card.Description>{props.product.description.replace(/(<([^>]+)>)/ig,"")}</Card.Description>
                 <Dropdown
                     className="sizes-drop"
                     onChange={handleSize}
@@ -48,7 +42,10 @@ const ProductCard = ({product}) => {
                     selection
                     options={sizes}
                 />
-                <Button className='add-button' onClick={addToCart}>
+                <Button className='add-button' onClick={(e) => {
+                    e.preventDefault()
+                    props.addToCart(props.product.id, variantInfo)
+                }}>
                     Add to Cart
                     <Icon name='arrow right' />
                 </Button>
@@ -69,4 +66,3 @@ export default ProductCard;
 //     { vrnt_RyWOwmPO9lnEa2: 'optn_zkK6oLpvEoXn0Q' }
 //   )
 
-// commerce.cart.add('productId', [num of items], {vrtn: vrtnID})

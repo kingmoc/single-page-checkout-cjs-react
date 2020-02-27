@@ -4,7 +4,7 @@ import { Image, Grid } from 'semantic-ui-react';
 import hero from '../img/hero.jpg'
 import ProductCard from '../components/ProductCard'
 
-const ProductContainer = () => {
+const ProductContainer = (props) => {
 
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
     const [products, setProducts] = useState([])
@@ -23,7 +23,11 @@ const ProductContainer = () => {
         <>
             <Grid stackable columns='equal' centered>
                 <Image src={hero} fluid/>
-                {products.map(product => <Grid.Column width={5} key={product.id}><ProductCard product={product} /></Grid.Column>)}
+                {products.map(product => (
+                    <Grid.Column width={5} key={product.id}>
+                        <ProductCard product={product} addToCart={props.addToCart}/>
+                    </Grid.Column>
+                ))}
             </Grid>
         </>
     );
