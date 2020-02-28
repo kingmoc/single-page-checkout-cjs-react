@@ -11,7 +11,7 @@ const Nav = (props) => {
         if (props.cart && props.cart.total_unique_items > 0) {
             return(
                 <Label color='green' >
-                    <Icon name='shopping cart' size='large'/>
+                    <Icon name='shopping cart' size='big'/>
                     {props.cart.total_unique_items}
                 </Label>
             )
@@ -33,7 +33,7 @@ const Nav = (props) => {
                     <Input icon='search' placeholder='Search...' />
                 </Menu.Item>
                 <Menu.Item>
-                    <Modal trigger={iconDisplay()}>
+                    <Modal trigger={iconDisplay()} className='cart-model'>
                         <CartModal cart={props.cart} emptyCart={props.emptyCart}/>
                     </Modal>
                 </Menu.Item>

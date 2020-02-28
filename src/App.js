@@ -31,7 +31,8 @@ function App() {
                     setCart(res.cart)
                 })
         } else {
-            console.log('Error - Please Select Size')
+            // console.log('Error - Please Select Size')
+            window.alert('Please Select a Shirt Size')
         }
     }
 
@@ -52,7 +53,9 @@ function App() {
                     <LeftPanel />
                 </Grid.Column>
                 <Grid.Column width={9}>
-                    <ProductContainer addToCart={addToCart}/>
+                    <ProductContainer 
+                        addToCart={addToCart} 
+                    />
                 </Grid.Column>
             </Grid>
             <Footer />

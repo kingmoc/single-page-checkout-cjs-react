@@ -25,7 +25,10 @@ const ProductContainer = (props) => {
                 <Image src={hero} fluid/>
                 {products.map(product => (
                     <Grid.Column width={5} key={product.id}>
-                        <ProductCard product={product} addToCart={props.addToCart}/>
+                        <ProductCard 
+                            product={product} 
+                            addToCart={props.addToCart} 
+                        />
                     </Grid.Column>
                 ))}
             </Grid>

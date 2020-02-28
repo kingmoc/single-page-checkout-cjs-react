@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Grid, Image, Button, Icon, Dropdown } from 'semantic-ui-react';
+import { Card, Grid, Image, Button, Icon, Dropdown, Label, Modal, Header } from 'semantic-ui-react';
 
 const ProductCard = (props) => {
     // console.log(product, 'props from Container')
 
     const [sizes, setSizes] = useState([])
     const [variantInfo, setVariantInfo] = useState()
-    const [placeholderText, setPlaceholderText] = useState('Select Size')
 
     useEffect(() => {        
         
@@ -39,14 +38,13 @@ const ProductCard = (props) => {
                     onChange={handleSize}
                     value={sizes.text} 
                     fluid
-                    placeholder={placeholderText} 
+                    placeholder='Select Size'
                     selection
                     options={sizes}
                 />
                 <Button className='add-button' onClick={(e) => {
                     e.preventDefault()
                     props.addToCart(props.product.id, variantInfo)
-                    setPlaceholderText('Select Sizedd')
                 }}>
                     Add to Cart
                     <Icon name='arrow right' />
