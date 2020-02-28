@@ -14,22 +14,39 @@ function App() {
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
     const [cart, setCart] = useState()
 
+    useEffect(() => {
+        commerce.cart.retrieve()
+            .then(res => {
+                console.log(res, 'response from app useEffect')
+                setCart(res)
+            })
+    },[])
+
     const addToCart = (productId, variantInfo) => {
 
         if(variantInfo) {
             commerce.cart.add(productId, 1, variantInfo)
                 .then(res => {
                     console.log(res, 'res from adding to CART!!')
+                    setCart(res.cart)
                 })
         } else {
             console.log('Error - Please Select Size')
         }
+    }
 
+    const emptyCart = () => {
+        console.log('works')
+        commerce.cart.empty()
+            .then(res => {
+                console.log(res, 'res from empty cart')
+                setCart(null)
+            })
     }
 
     return (
         <div className="App">
-            <Nav />
+            <Nav cart={cart} emptyCart={emptyCart}/>
             <Grid centered stackable padded relaxed>
                 <Grid.Column className='left-column' width={5}>
                     <LeftPanel />

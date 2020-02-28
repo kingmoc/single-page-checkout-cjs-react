@@ -6,6 +6,7 @@ const ProductCard = (props) => {
 
     const [sizes, setSizes] = useState([])
     const [variantInfo, setVariantInfo] = useState()
+    const [placeholderText, setPlaceholderText] = useState('Select Size')
 
     useEffect(() => {        
         
@@ -36,15 +37,16 @@ const ProductCard = (props) => {
                 <Dropdown
                     className="sizes-drop"
                     onChange={handleSize}
-                    // value={numShirts} 
+                    value={sizes.text} 
                     fluid
-                    placeholder='Select Size' 
+                    placeholder={placeholderText} 
                     selection
                     options={sizes}
                 />
                 <Button className='add-button' onClick={(e) => {
                     e.preventDefault()
                     props.addToCart(props.product.id, variantInfo)
+                    setPlaceholderText('Select Sizedd')
                 }}>
                     Add to Cart
                     <Icon name='arrow right' />

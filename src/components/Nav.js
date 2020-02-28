@@ -1,10 +1,28 @@
 import React from 'react';
-import { Menu, Image, Icon, Segment, Input, Modal } from 'semantic-ui-react'
+import { Menu, Image, Icon, Segment, Input, Modal, Label } from 'semantic-ui-react'
 import logo from '../img/logo.png'
 
 import CartModal from './CartModal'
 
-const Nav = () => {
+const Nav = (props) => {
+
+    const iconDisplay = () => {
+
+        if (props.cart && props.cart.total_unique_items > 0) {
+            return(
+                <Label color='green' >
+                    <Icon name='shopping cart' size='large'/>
+                    {props.cart.total_unique_items}
+                </Label>
+            )
+        } else {
+            return (
+                <Icon name='shopping cart' size='large'/>
+            )
+        }
+    }
+
+
     return (
         <Menu borderless> 
             <Segment className='nav-segment'>
@@ -15,8 +33,8 @@ const Nav = () => {
                     <Input icon='search' placeholder='Search...' />
                 </Menu.Item>
                 <Menu.Item>
-                    <Modal trigger={<Icon name='shopping cart' size='large' color='green'/>}>
-                        <CartModal />
+                    <Modal trigger={iconDisplay()}>
+                        <CartModal cart={props.cart} emptyCart={props.emptyCart}/>
                     </Modal>
                 </Menu.Item>
             </Segment>
