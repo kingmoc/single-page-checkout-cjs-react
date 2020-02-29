@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Commerce from '@chec/commerce.js'
 import { Grid } from 'semantic-ui-react';
 
-
 //Component Imports
 import Nav from './components/Nav'
 import LeftPanel from './components/LeftPanel'
@@ -13,6 +12,39 @@ function App() {
 
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
     const [cart, setCart] = useState()
+    const cartHelperFunctions = {
+
+        deleteItem: (lineItemId) => {
+            commerce.cart.remove(lineItemId)
+                .then(res => {
+                    console.log(res, 'response from line item removal')
+                    setCart(res.cart)
+                })
+        },
+        addQaunity: (lineItemId, newQuanity) => {
+            commerce.cart.update(lineItemId, {quantity: newQuanity})
+                .then(res => {
+                    console.log(res, 'res from adding quanity')
+                    setCart(res.cart)
+                    
+                })
+        },
+        subtractQuanity: (lineItemId, newQuanity) => {
+            console.log(newQuanity, 'new Q when subtracting Item')
+
+            if (newQuanity === 0) {
+                console.log(lineItemId, 'lineitem ID')
+                cartHelperFunctions.deleteItem(lineItemId)
+            } else {
+                commerce.cart.update(lineItemId, {quantity: newQuanity})
+                    .then(res => {
+                        console.log(res, 'res from subtracting quanity')
+                        setCart(res.cart)
+                    })
+            }
+
+        }
+    }
 
     useEffect(() => {
         commerce.cart.retrieve()
@@ -47,7 +79,9 @@ function App() {
 
     return (
         <div className="App">
-            <Nav cart={cart} emptyCart={emptyCart}/>
+            <CartItemsContext.Provider value={cartHelperFunctions}>
+                <Nav cart={cart} emptyCart={emptyCart}/>
+            </CartItemsContext.Provider>
             <Grid centered stackable padded relaxed>
                 <Grid.Column className='left-column' width={5}>
                     <LeftPanel />
@@ -64,3 +98,7 @@ function App() {
 }
 
 export default App;
+
+
+
+export const CartItemsContext = React.createContext()
