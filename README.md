@@ -40,11 +40,11 @@ Okay! So you've been working hard adding all your wonderful products to your Che
 
 ### STEP 1. Adding Variants:
 
-This step is important when having products with some sort of variance.  If you have a product without variances, you can proceed to step 2 - otherwise you need to add product variances in your Chec dashboard.  In our example store selling t-shirts most likely you'll have different sizes and colors.  To keep it simple we will be providing options of **Small, Medium, Large**. Once you click on a product, select the options tab ...   
+This step is important when having products with some sort of variance.  If you have a product without variances, you can proceed to Step 2. - otherwise you need to add product variances in your Chec dashboard.  In our example store selling t-shirts most likely you'll have different sizes and colors.  To keep it simple we will be providing options of **Small, Medium, Large**. Once you click on a product, select the options tab ...   
 
 ![](src/img/add-variant.JPG)
 
-It's important to note that you shouldn't add a price in this section unless a particular variant yeilds an increase in price.  So in our case no matter which size you select, the price remains $25.  Save those changes and see how we can hadle this in our code! 
+It's important to note that you shouldn't add a price in this section unless a particular variant yields an increase in price. So in our case no matter which size you select, the price remains $25. Save those changes and see how we can handle this in our code! 
 
 #### Handling Variants in the code
 
@@ -52,7 +52,7 @@ The Product object has a property *variants* which is an array with each product
 
 ![](src/img/variant-property.JPG)
 
-We can handle this data in our `<ProuductCard />` component where we are currently displaying product info.  You can display the options how you like but our example will use a dropdown.  Because of how dropdowns are configured with Semantic UI - we have to provide an options array of objects with a certain format.  
+We can handle this data in our `<ProuductCard />` component where we are currently displaying product info. You can display the options how you like but our example will use a drop-down. Because of how drop-downs are configured with Semantic UI - we have to provide an options array of objects with a certain format. 
 
 ```javascript
     useEffect(() => {        
@@ -71,7 +71,7 @@ We can handle this data in our `<ProuductCard />` component where we are current
     }, [])
 ```
 
-The purpose of the `useEffect()` here is that our `<Dropdown />` Semantic UI component needs options to select.  The `useEffect()` allows us to map through our variant options and create our options array before the render.  It's important to note I set the value to the option.id because that is key information needed to add a product (and it's variant) to the cart.  Once complete, we add that value to state so our `<Dropdown />` can then access it.  
+The purpose of the `useEffect()` here is that our `<Dropdown />` Semantic UI component needs options to select.  The `useEffect()` allows us to map through our variant options and create our options array before the render.  It's important to note I set the value to the option.id because that is important information needed to add a product (and it's variant) to the cart.  Once complete, we add that value to state so our `<Dropdown />`  component can then access it.  
 
 ```
 const [sizes, setSizes] = useState([])
@@ -99,7 +99,7 @@ This is how our Product Card looks once we add our dropdown:
 </Card>
 ```
 
-Now it's time to write the *onChange* function that will capture the selection and put that data into state: 
+Now it's time to write the ***onChange*** function that will capture the selection and put that data into state: 
 
 ```javascript
 const [variantInfo, setVariantInfo] = useState()
@@ -117,59 +117,120 @@ This function creates an object that matches the proper format for sending varia
  We now have an object variable (`variantInfo`) that contains the variantID along with the selected variant optionID.  
 
 
-### STEP 2. React Time! (Getting your App setup):
+### STEP 2. Addding Product to Cart:
 
-This is where the fun begins!  This example was done using CRA ([create-react-app](https://create-react-app.dev/docs/getting-started/)).  If you're familiar with React, then you know all about CRA.  If you don't want to fire up a project from scratch, you can fork and clone this repository (make sure to navigate to the proper folder) and run: 
-
-`yarn install or npm install`
-
-This will install the necessary dependencies needed for this project.  This also includes the package needed for the Commerce.js SDK. Once installed run `yarn start` to run the app using react's development server.  
-
-##### Installing Commerce.js manually
-
-One of the great things about this SDK is its ease of use.  Getting what you need into the project is very simple.
-
-1. [Installing via CDN](https://commercejs.com/docs/overview/getting-started.html)
+This is where the fun begins! Just a point of note, you're going to see a pattern emerge where we add an action button - write a function to handle said action, then pass that function to the component that needs it.  But before we do any of that, we need to setup the state that will be holding our cart object for the entire app.  
 
 ```
-<script type="text/javascript" src="https://assets.chec-cdn.com/v2/commerce.js"></script>
+const [cart, setCart] = useState()
 ```
 
-2. [Installing via SDK](https://commercejs.com/docs/overview/getting-started.html)
+There are many ways to handle state management, which also includes organization.  For our example we will putting our 'global state' (*state that needs accessed across many components*) inside our `<App />` component.  For shallow nested components we will prop drill - for the deeply nested components we will use the `useContext()` API.  
 
-```
-npm install @chec/commerce.js
-```
-
-### STEP 3. Using Commerce.js in your Project:
-
-Again, the developers at Commerce.js have done their best to make using this tool simple.  If you take a look in the product container component (product-list-cjs-react/src/components/ProductContainer.js) - this is where the magic happens! In order to connect to the source (your chec dashboard) you must first import the package: 
-```
-import Commerce from '@chec/commerce.js'
-```
-AND Then create your object variable ... 
-
-```
-const commerce = new Commerce('YOUR SANDBOX PUBLIC KEY')
-```
-
-#### Using the commerce object
-
-Utilizing this object can be tricky in React (based on life cycle methods and how react renders components) because the commerce object actually is a promise.  In order to handle the promise you must use `.then()` and `.catch()` so that you can process the data.  I won't go to deep on promises and how you handle them, but in this case its acting like an API call.  Because of that we must wrap this promise into a useEffect - so that we can safely store our product info into state.  Using state (which is basically data storage) is a big part of React and if you look at this example - I'm storing the returned data from the promise into state. 
+Let's write our `addToCart()` function that will take two args - a *productId* and the *variantInfo* variable we talked about earlier:  
 
 ```javascript
-const [products, setProducts] = useState([])
+const addToCart = (productId, variantInfo) => {
+
+    if(variantInfo) {
+        commerce.cart.add(productId, 1, variantInfo)
+            .then(res => {
+                setCart(res.cart)
+            })
+    } else {
+        window.alert('Please Select a Shirt Size')
+    }
+}
+```
+
+We have some logic to make sure the user selects a variant (it's required to select a variant in order to add it to the cart). We also hard-code the quantity to 1 because our cart page is where a customer can change the quantity. Lastly upon a successful response we'll add the cart object to our global cart state. 
+
+#### Utilization of `cart.retrieve()`
+
+This is a very important method because when called it returns your most up to date cart info.  We want to use this method in our `<App />` component to always be checking for the latest cart data.  As you will see, this also helps us with data persistence in the event of a refresh or re-render.   
+
+```javascript
+useEffect(() => {
+    commerce.cart.retrieve()
+        .then(res => {
+            setCart(res)
+        })
+},[])
+```
+
+Let's take a look at our `<App />` component with all the updates: 
+
+```javascript
+function App() {
+
+    const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
+
+    const [cart, setCart] = useState()
 
     useEffect(() => {
-        const commerce = new Commerce('YOUR SANDBOX PUBLIC KEY')
-        commerce.products.list()
-          .then(res => {
-            setProducts(res.data)
-          })
-          .catch(err => console.log(err))
+        commerce.cart.retrieve()
+            .then(res => {
+                setCart(res)
+            })
     },[])
+
+    const addToCart = (productId, variantInfo) => {
+
+        if(variantInfo) {
+            commerce.cart.add(productId, 1, variantInfo)
+                .then(res => {
+                    setCart(res.cart)
+                })
+        } else {
+            window.alert('Please Select a Shirt Size')
+        }
+    }
+
+    return (
+        <div className="App">
+            <Nav cart={cart} emptyCart={emptyCart}/>
+            <Grid centered stackable padded relaxed>
+                <Grid.Column className='left-column' width={5}>
+                    <LeftPanel />
+                </Grid.Column>
+                <Grid.Column width={9}>
+                    <ProductContainer 
+                        addToCart={addToCart} 
+                    />
+                </Grid.Column>
+            </Grid>
+            <Footer />
+        </div>
+  );
+}
 ```
-If you notice, the setProducts function updates our products variable with all the info from our chec dashboard. 
+
+We have our `cart.retrieve()` always making sure our cart object is up to date, our `addToCart()` function that is being passed to our `<ProductContainer />` component -  which will then be passed to our `<ProductCard />` component.  
+
+#### Add to Cart Button
+
+Now that we have everything setup in our <App /> component and have also passed the `addToCart()` function to the proper component - we need to create a button that will trigger our function and add the product (and its variant) to the cart and also update our state cart object. 
+
+```javascript
+
+const handleButtonAddCart = e => {
+    e.preventDefault()
+    props.addToCart(props.product.id, variantInfo)
+}
+
+<Button fluid className='add-button' onClick={handleButtonAddCart}>
+    Add to Cart
+    <Icon name='arrow right' />
+</Button>
+```
+
+As you can see we call our `addToCart()` function with the two required args which then runs and executes letting us know a product has been added to our cart! 
+
+![](src/img/cart-success.JPG)
+
+### STEP 3. Add Cart Notification:
+
+* ***TO BE CONTINUED ...***
 
 ### STEP 4. Displaying the Product Info:
 
