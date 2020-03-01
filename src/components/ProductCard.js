@@ -28,12 +28,15 @@ const ProductCard = (props) => {
 
     const handleButtonAddCart = e => {
         e.preventDefault()
-        let selectInput = document.querySelectorAll('.sizes-drop')
         props.addToCart(props.product.id, variantInfo)
-
-        selectInput.forEach((input,i) => {
-            input.children[0].innerHTML = 'Select Size'
-        })
+        
+        
+        // Funtion to Clear Select Input for Dropdown - Needs work. 
+        // let selectInput = document.querySelectorAll('.sizes-drop')
+        // selectInput.forEach((input,i) => {
+        //     input.children[0].innerHTML = 'Select Size'
+        //     // input.children[0].classList.add('default')
+        // })
     }
 
     return (
