@@ -12,7 +12,7 @@ This guide illustrates how to add products to your cart using React.js & Commerc
 
 **********
 
-![](src/img/home-screen-shot2.JPg)
+![](src/img/home-screen-shot2.JPG)
 
 ## Overview
 Okay! So you've been working hard adding all your wonderful products to your Chec dashboard.  Now it's time to give the user the ability to add those products to the cart.  This process involves a few more steps but don't worry - this guide has you covered! One of the biggest advantages of using the Commerce.js (SDK) is that the commerce object has easy to implement functions that help with building out the cart functionality.  Further and most importantly, every cart method such as `cart.add()`, `cart.retrieve()`, `cart.update()` return an updated cart object which helps keep our cart updated and persistent through a refresh.  Now, let's dive in!
