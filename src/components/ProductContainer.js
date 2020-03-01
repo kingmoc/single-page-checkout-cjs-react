@@ -7,6 +7,7 @@ import ProductCard from '../components/ProductCard'
 const ProductContainer = (props) => {
 
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
+    
     const [products, setProducts] = useState([])
 
     useEffect(() => {
@@ -16,8 +17,6 @@ const ProductContainer = (props) => {
           })
           .catch(err => console.log(err))
     },[])
-
-
 
     return (
         <>

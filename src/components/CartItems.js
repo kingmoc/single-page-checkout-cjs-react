@@ -5,10 +5,7 @@ import { CartItemsContext } from '../App'
 
 const CartItems = (props) => {
 
-    console.log(props, "props from CartModal to Cart Items")
-
     const helpFnc = useContext(CartItemsContext)
-    console.log(helpFnc, 'test from useContext')
 
     return (
         <>
@@ -19,7 +16,8 @@ const CartItems = (props) => {
                     <span>{props.item.variants[0].option_name}</span>
                 </Item.Meta>
                 <div className='quanity-group'>
-                    <Button 
+                    <Button
+                        negative 
                         className='quan-buttons' 
                         onClick={() => {
                             let newQuanity = props.item.quantity - 1
@@ -32,7 +30,8 @@ const CartItems = (props) => {
                         className='input-quanity'
                         value={props.item.quantity} 
                     />
-                    <Button 
+                    <Button
+                        positive 
                         className='quan-buttons'
                         onClick={() => {
                             let newQuanity = props.item.quantity + 1
@@ -42,7 +41,6 @@ const CartItems = (props) => {
                         <Icon name='plus' /> 
                     </Button>
                 </div>
-                {/* <Button circular icon='x' /> */}
                 <Item.Extra className='item-total'>
                     <Header floated='right'>${props.item.line_total.formatted_with_symbol}</Header>
                 </Item.Extra>

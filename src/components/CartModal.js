@@ -21,7 +21,14 @@ const CartModal = (props) => {
                     </Item.Group>
 
                     <Modal.Actions className='model-bottom'>
-                        <Button floated='left' onClick={props.emptyCart}>Empty Cart</Button>
+                        <Button  
+                        basic 
+                        negative  
+                        floated='left' 
+                        onClick={props.emptyCart}
+                        >
+                            Empty Cart
+                        </Button>
                         <Header floated='right'>{props.cart.subtotal.formatted_with_symbol}</Header>
                     </Modal.Actions>
                 </>

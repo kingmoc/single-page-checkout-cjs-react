@@ -26,6 +26,16 @@ const ProductCard = (props) => {
         setVariantInfo({[props.product.variants[0].id]: value})
     }
 
+    const handleButtonAddCart = e => {
+        e.preventDefault()
+        let selectInput = document.querySelectorAll('.sizes-drop')
+        props.addToCart(props.product.id, variantInfo)
+
+        selectInput.forEach((input,i) => {
+            input.children[0].innerHTML = 'Select Size'
+        })
+    }
+
     return (
         <Card>
             <Image src={props.product.media.source} />
@@ -36,16 +46,13 @@ const ProductCard = (props) => {
                 <Dropdown
                     className="sizes-drop"
                     onChange={handleSize}
-                    value={sizes.text} 
+                    value={sizes.text}
                     fluid
                     placeholder='Select Size'
                     selection
                     options={sizes}
                 />
-                <Button className='add-button' onClick={(e) => {
-                    e.preventDefault()
-                    props.addToCart(props.product.id, variantInfo)
-                }}>
+                <Button fluid className='add-button' onClick={handleButtonAddCart}>
                     Add to Cart
                     <Icon name='arrow right' />
                 </Button>
@@ -55,14 +62,3 @@ const ProductCard = (props) => {
 };
 
 export default ProductCard;
-
-
-
-// commerce.cart.add(
-//     'prod_QG375vVPR5rMOg',
-//     // optional: the number of items to add
-//     1,
-//     // optional: if your product has variants, the variant and option ID to add
-//     { vrnt_RyWOwmPO9lnEa2: 'optn_zkK6oLpvEoXn0Q' }
-//   )
-

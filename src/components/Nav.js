@@ -33,7 +33,7 @@ const Nav = (props) => {
                     <Input icon='search' placeholder='Search...' />
                 </Menu.Item>
                 <Menu.Item>
-                    <Modal trigger={iconDisplay()} className='cart-model'>
+                    <Modal trigger={iconDisplay()} className='cart-model' closeIcon>
                         <CartModal cart={props.cart} emptyCart={props.emptyCart}/>
                     </Modal>
                 </Menu.Item>

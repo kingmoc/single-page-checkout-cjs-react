@@ -8,43 +8,13 @@ import LeftPanel from './components/LeftPanel'
 import Footer from './components/Footer'
 import ProductContainer from './components/ProductContainer'
 
+export const CartItemsContext = React.createContext()
+
 function App() {
 
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
+
     const [cart, setCart] = useState()
-    const cartHelperFunctions = {
-
-        deleteItem: (lineItemId) => {
-            commerce.cart.remove(lineItemId)
-                .then(res => {
-                    console.log(res, 'response from line item removal')
-                    setCart(res.cart)
-                })
-        },
-        addQaunity: (lineItemId, newQuanity) => {
-            commerce.cart.update(lineItemId, {quantity: newQuanity})
-                .then(res => {
-                    console.log(res, 'res from adding quanity')
-                    setCart(res.cart)
-                    
-                })
-        },
-        subtractQuanity: (lineItemId, newQuanity) => {
-            console.log(newQuanity, 'new Q when subtracting Item')
-
-            if (newQuanity === 0) {
-                console.log(lineItemId, 'lineitem ID')
-                cartHelperFunctions.deleteItem(lineItemId)
-            } else {
-                commerce.cart.update(lineItemId, {quantity: newQuanity})
-                    .then(res => {
-                        console.log(res, 'res from subtracting quanity')
-                        setCart(res.cart)
-                    })
-            }
-
-        }
-    }
 
     useEffect(() => {
         commerce.cart.retrieve()
@@ -53,6 +23,35 @@ function App() {
                 setCart(res)
             })
     },[])
+
+    const cartHelperFunctions = {
+
+        deleteItem: (lineItemId) => {
+            commerce.cart.remove(lineItemId)
+                .then(res => {
+                    setCart(res.cart)
+                })
+        },
+        addQaunity: (lineItemId, newQuanity) => {
+            commerce.cart.update(lineItemId, {quantity: newQuanity})
+                .then(res => {
+                    setCart(res.cart)
+                    
+                })
+        },
+        subtractQuanity: (lineItemId, newQuanity) => {
+
+            if (newQuanity === 0) {
+                cartHelperFunctions.deleteItem(lineItemId)
+            } else {
+                commerce.cart.update(lineItemId, {quantity: newQuanity})
+                    .then(res => {
+                        setCart(res.cart)
+                    })
+            }
+
+        }
+    }
 
     const addToCart = (productId, variantInfo) => {
 
@@ -63,7 +62,6 @@ function App() {
                     setCart(res.cart)
                 })
         } else {
-            // console.log('Error - Please Select Size')
             window.alert('Please Select a Shirt Size')
         }
     }
@@ -79,9 +77,11 @@ function App() {
 
     return (
         <div className="App">
+
             <CartItemsContext.Provider value={cartHelperFunctions}>
                 <Nav cart={cart} emptyCart={emptyCart}/>
             </CartItemsContext.Provider>
+
             <Grid centered stackable padded relaxed>
                 <Grid.Column className='left-column' width={5}>
                     <LeftPanel />
@@ -93,6 +93,7 @@ function App() {
                 </Grid.Column>
             </Grid>
             <Footer />
+
         </div>
   );
 }
@@ -101,4 +102,3 @@ export default App;
 
 
 
-export const CartItemsContext = React.createContext()
