@@ -1,37 +1,121 @@
-# Adding Products to your Cart using Commerce.js (SDK) and React.js
+# Adding products to your cart using Commerce.js (SDK) and React.js
 
-A quick guide that shows you how to display a list of products using React.js & Commerece.js (SDK)
+This guide illustrates how to add products to your cart using React.js & Commerce.js (SDK)
 
-*Note: This guide is using v2*
+[See live demo here.](https://seities-store-cjs-react-guide.netlify.com/)
 
-![](src/img/home-screen-shot.JPG)
+****** *Note* ******
+
+* *This guide is using v2 of the SDK*
+* *The Live Demo is best viewed on Desktop (**responsiveness limited**)*
+* *This is a continuation of a previous guide - [Listing Products in Catalog](https://github.com/kingmoc/product-list-cjs-react)*
+
+**********
+
+![](src/img/home-screen-shot2.JPg)
 
 ## Overview
-The point of this guide is to help developers get familiar with using the Commerce.js SDK in conjunction with React.  Commerce.js is a powerful tool/resource that gives you the ability to build custom eCommerce sites without the headache of building out a lot of the complex functionality that comes along with eCommerce.  This means less experienced developers or eager online entrepreneurs can use these tools and build a more controlled and customized online store without relying on the big players like Shopify. Let's dive in! 
+Okay! So you've been working hard adding all your wonderful products to your Chec dashboard.  Now it's time to give the user the ability to add those products to the cart.  This process involves a few more steps but don't worry - this guide has you covered! One of the biggest advantages of using the Commerce.js (SDK) is that the commerce object has easy to implement functions that help with building out the cart functionality.  Further and most importantly, every cart method such as `cart.add()`, `cart.retrieve()`, `cart.update()` return an updated cart object which helps keep our cart updated and persistent through a refresh.  Now, let's dive in!
 
 #### This guide will cover: 
 
-1. Adding Products to your chec dashboard
-2. Using the Commerce.js SDK to access dashboard data
-3. Implementing Commerce.js in a React App
-4. Displaying a list of products on the screen
+1. Setting up variants and handling that in code 
+2. The process to add a product to your cart 
+3. Making sure to give cart update notification to user 
+4. Listing items that have been added to cart 
+5. Adding a button to empty entire cart 
+6. Capability to increase/decrease quantity from within cart
 
-*This guide will not go into detail about other features/functionality within an eCommerce site such as: adding to cart, product page, checking out etc ... It will simply give a blueprint to how you can display a list of products specifically with React.* 
+*This guide strictly utilizes functional react components and relies heavenly on react hooks.  The purpose of this guide is to show how you can use the SDK to build eCommerce functionality and not a true deep dive into react. There will be links to outside resources that can further explain certain react features.*
 
 ### Requirements/Prerequisites
 
 - [ ] IDE of your choice (code editor)
-- [ ] [NodeJS](https://nodejs.org/en/), or [yarn](https://classic.yarnpkg.com/en/docs/install/#windows-stable)
+- [ ] [NodeJS](https://nodejs.org/en/), or [yarn](https://classic.yarnpkg.com/en/docs/install/#windows-stable) → npm or yarn.
 - [ ] Some knowledge of Javascript & React
-- [ ] *Bonus* familiarity with the framework Semantic UI
+- [ ] *Bonus* Using [React Hooks](https://reactjs.org/docs/hooks-reference.html) - specifically `useState()`, `useEffect()`, `useContext()`
+- [ ] *Bonus* familiarity with the framework [Semantic UI (react) library](https://react.semantic-ui.com/)
 
 ## Getting Started
 
-### STEP 1. Create an account and upload Product Info:
+### STEP 1. Adding Variants:
 
-It should be noted that there are two main components, Chec (dashboard) and Commerce.js SDK.  Think of chec as the power, the source of all your customer data, transactions - things of that nature.  Think of the SDK as your way to communicate with your data.  You'll need to create an account [HERE](https://dashboard.chec.io/signup) - once logged in, navigate to products! The only product data you need to get started is: **Name, Image, Price, Description.** 
+This step is important when having products with some sort of variance.  If you have a product without variances, you can proceed to step 2 - otherwise you need to add product variances in your Chec dashboard.  In our example store selling t-shirts most likely you'll have different sizes and colors.  To keep it simple we will be providing options of **Small, Medium, Large**. Once you click on a product, select the options tab ...   
 
-![](src/img/products-list.JPG)
+![](src/img/add-variant.JPG)
+
+It's important to note that you shouldn't add a price in this section unless a particular variant yeilds an increase in price.  So in our case no matter which size you select, the price remains $25.  Save those changes and see how we can hadle this in our code! 
+
+#### Handling Variants in the code
+
+The Product object has a property *variants* which is an array with each product variant.  Also within each variant is another property *options* which is also an array with each variant options (ex. Small, Medium etc...) 
+
+![](src/img/variant-property.JPG)
+
+We can handle this data in our `<ProuductCard />` component where we are currently displaying product info.  You can display the options how you like but our example will use a dropdown.  Because of how dropdowns are configured with Semantic UI - we have to provide an options array of objects with a certain format.  
+
+```javascript
+    useEffect(() => {        
+        
+        let finalSizeArray = props.product.variants[0].options.map(option => {
+            let sizeInfo = {}
+
+            sizeInfo.key = option.name
+            sizeInfo.text = option.name
+            sizeInfo.value = option.id
+
+            return sizeInfo
+        })
+
+        setSizes(finalSizeArray)
+    }, [])
+```
+
+The purpose of the `useEffect()` here is that our `<Dropdown />` Semantic UI component needs options to select.  The `useEffect()` allows us to map through our variant options and create our options array before the render.  It's important to note I set the value to the option.id because that is key information needed to add a product (and it's variant) to the cart.  Once complete, we add that value to state so our `<Dropdown />` can then access it.  
+
+```
+const [sizes, setSizes] = useState([])
+```
+
+This is how our Product Card looks once we add our dropdown: 
+
+```javascript
+<Card>
+    <Image src={props.product.media.source} />
+    <Card.Content>
+        <Card.Header>{props.product.name}</Card.Header>
+        <Card.Meta>{props.product.price.formatted_with_symbol}</Card.Meta>
+        <Card.Description>{props.product.description.replace(/(<([^>]+)>)/ig,"")}</Card.Description>
+        <Dropdown
+            className="sizes-drop"
+            onChange={handleSize}
+            value={sizes.text}
+            fluid
+            placeholder='Select Size'
+            selection
+            options={sizes}
+        />
+    </Card.Content>
+</Card>
+```
+
+Now it's time to write the *onChange* function that will capture the selection and put that data into state: 
+
+```javascript
+const [variantInfo, setVariantInfo] = useState()
+
+const handleSize = (e, {value}) => {
+    setVariantInfo({[props.product.variants[0].id]: value})
+}
+```
+
+This function creates an object that matches the proper format for sending variant info using the `cart.add()` method from the SDK. 
+```
+ { vrnt_RyWOwmPO9lnEa2: 'optn_zkK6oLpvEoXn0Q' }
+ ```
+
+ We now have an object variable (`variantInfo`) that contains the variantID along with the selected variant optionID.  
+
 
 ### STEP 2. React Time! (Getting your App setup):
 

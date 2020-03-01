@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Grid, Image, Button, Icon, Dropdown, Label, Modal, Header } from 'semantic-ui-react';
+import { Card, Image, Button, Icon, Dropdown } from 'semantic-ui-react';
 
 const ProductCard = (props) => {
-    // console.log(product, 'props from Container')
+    console.log(props.product, 'props from Container')
 
     const [sizes, setSizes] = useState([])
     const [variantInfo, setVariantInfo] = useState()
