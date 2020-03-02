@@ -5,6 +5,8 @@ import { CartItemsContext } from '../App'
 
 const CartItems = (props) => {
 
+    // console.log(props, 'props from line_items')
+
     const helpFnc = useContext(CartItemsContext)
 
     return (

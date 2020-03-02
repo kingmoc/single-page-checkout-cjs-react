@@ -22,10 +22,10 @@ const CartModal = (props) => {
 
                     <Modal.Actions className='model-bottom'>
                         <Button  
-                        basic 
-                        negative  
-                        floated='left' 
-                        onClick={props.emptyCart}
+                            basic 
+                            negative  
+                            floated='left' 
+                            onClick={props.emptyCart}
                         >
                             Empty Cart
                         </Button>
