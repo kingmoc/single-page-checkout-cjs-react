@@ -669,7 +669,8 @@ Thanks to the Commerce.js SDK and all the usefull methods/functions that come wi
 
 If you happen to be advanced in react you can implement redux for state managment and initialize your store with the cart object.  There are many ways to design and layout your eCommerce app but the most important factor is getting the neccessary data in order to provide a smooth user experience when selecting a product and adding to the cart.  
 
-I hope this guide helps with using the Commerce.js SDK in your react project.  Lastly this guide is a continuation of a previous guide - [Listing Products in Catalog](https://github.com/kingmoc/product-list-cjs-react) - so check that out if you're just starting out and need help with getting your products listing on the page.  
+I hope this guide helps with using the Commerce.js SDK in your react project.  Lastly this guide is a continuation of a previous guide:
+ - [Listing Products in Catalog](https://github.com/kingmoc/product-list-cjs-react) - so check that out if you're just starting out and need help with getting your products listing on the page.  
 
 [LIVE DEMO](https://seities-store-cjs-react-guide.netlify.com/)
 
