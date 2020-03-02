@@ -40,7 +40,7 @@ Okay! So you've been working hard adding all your wonderful products to your Che
 
 ### STEP 1. Adding Variants:
 
-This step is important when having products with some sort of variance.  If you have a product without variances, you can proceed to Step 2. - otherwise you need to add product variances in your Chec dashboard.  In our example store selling t-shirts most likely you'll have different sizes and colors.  To keep it simple we will be providing options of **Small, Medium, Large**. Once you click on a product, select the options tab ...   
+This step is important when having products with some sort of variance.  If you have a product without variances, you can proceed to Step 2. - otherwise you need to add product variances in your Chec Dashboard.  In our example store selling t-shirts, most likely you'll have different sizes and colors.  To keep it simple we will be providing one variant and three options of **Small, Medium, Large**. Once you click on a product, select the options tab ...   
 
 ![](src/img/add-variant.JPG)
 
@@ -48,11 +48,11 @@ It's important to note that you shouldn't add a price in this section unless a p
 
 #### Handling Variants in the code
 
-The Product object has a property *variants* which is an array with each product variant.  Also within each variant is another property *options* which is also an array with each variant options (ex. Small, Medium etc...) 
+The Product object has a property *`variants`* which is an array with each product variant.  Also within each variant is another property *`options`* which is also an array with each variant options (ex. Small, Medium etc...) 
 
 ![](src/img/variant-property.JPG)
 
-We can handle this data in our `<ProuductCard />` component where we are currently displaying product info. You can display the options how you like but our example will use a drop-down. Because of how drop-downs are configured with Semantic UI - we have to provide an options array of objects with a certain format. 
+We can handle this data in our `<ProuductCard />` component where we are currently displaying product info. You can display the options how you like, but our example will use a drop-down. Because of how drop-downs are configured with Semantic UI - we have to provide an options array of objects with a certain format. 
 
 ```javascript
 // *** ProductCard.js ***
@@ -73,7 +73,7 @@ We can handle this data in our `<ProuductCard />` component where we are current
     }, [])
 ```
 
-The purpose of the `useEffect()` here is that our `<Dropdown />` Semantic UI component needs options to select.  The `useEffect()` allows us to map through our variant options and create our options array before the render.  It's important to note I set the value to the option.id because that is important information needed to add a product (and it's variant) to the cart.  Once complete, we add that value to state so our `<Dropdown />`  component can then access it.  
+The purpose of the `useEffect()` here is that our `<Dropdown />` Semantic UI component needs options to select.  The `useEffect()` allows us to map through our variant options and create our options array before the render.  It's important to note I set the value to the option.id because that is data needed to add a product (and it's variant) to the cart.  Once complete, we add that value to state so our `<Dropdown />`  component can then access it.  
 
 ```
 const [sizes, setSizes] = useState([])
@@ -103,7 +103,7 @@ This is how our Product Card looks once we add our dropdown:
 </Card>
 ```
 
-Now it's time to write the ***onChange*** function that will capture the selection and put that data into state: 
+Now it's time to write the ***onChange*** function `handleSize()` that will capture the selection and put that data into state: 
 
 ```javascript
 // *** ProductCard.js ***
@@ -133,9 +133,9 @@ This is where the fun begins! Just a point of note, you're going to see a patter
 const [cart, setCart] = useState()
 ```
 
-There are many ways to handle state management, which also includes organization.  For our example we will putting our 'global state' (*state that needs accessed across many components*) inside our `<App />` component.  For shallow nested components we will prop drill - for the deeply nested components we will use the `useContext()` API.  
+There are many ways to handle state management, which also includes organization.  For our example we will be putting our 'global state' (***state that needs accessed across many components***) inside our `<App />` component.  For shallow nested components we will prop drill - for the deeply nested components we will use the [`useContext()` API](https://reactjs.org/docs/hooks-reference.html#usecontext).  
 
-Let's write our `addToCart()` function that will take two args - a *productId* and the *variantInfo* variable we talked about earlier:  
+Let's write our `addToCart()` function that will take two args - a ***productId*** and the ***variantInfo*** variable we talked about earlier:  
 
 ```javascript
 // *** App.js ***
@@ -153,7 +153,7 @@ const addToCart = (productId, variantInfo) => {
 }
 ```
 
-We have some logic to make sure the user selects a variant (it's required to select a variant in order to add it to the cart). We also hard-code the quantity to 1 because our cart page is where a customer can change the quantity. Lastly upon a successful response we'll add the cart object to our global cart state. 
+We have some logic to make sure the user selects a variant (*it's required to select a variant in order to add it to the cart*). We also hard-code the quantity to 1 because our cart page is where a customer can change the quantity. Lastly upon a successful response we'll add the cart object to our global cart state. 
 
 #### Utilization of `cart.retrieve()`
 
@@ -223,7 +223,7 @@ We have our `cart.retrieve()` always making sure our cart object is up to date, 
 
 #### Add to Cart Button
 
-Now that we have everything setup in our <App /> component and have also passed the `addToCart()` function to the proper component - we need to create a button that will trigger our function and add the product (and its variant) to the cart and also update our state cart object. 
+Now that we have everything setup in our `<App />` and have also passed the `addToCart()` function to the proper component - we need to create a button that will trigger our function and add the product (and its variant) to the cart, and also update our state cart object. 
 
 ```javascript
 // *** ProductCard.js ***
@@ -260,7 +260,7 @@ This is accomplished by sending our cart object from state to our `<Nav />` comp
 <Nav cart={cart} emptyCart={emptyCart}/>
 ```
 
-The cart object has all the necessary data required to display what's needed to the user.  And, if you recall because we're updating our cart object in state whenever there are changes, we can attach key data to our cart object and ensure that the cart information is correct.  Let's see what I mean: 
+The cart object has all the necessary data required to display what's needed to the user.  And, if you recall because we're updating our cart object in state whenever there are changes, we can attach key data to our cart object and ensure that the cart information is correct.
 
 Here's a look at the cart object with key data points underlined ... 
 
@@ -300,7 +300,7 @@ We have a function here that returns some JSX depending on the value of `props.c
 
 As you can see we're also passing the cart object as a prop to our `<CartModal />` component that will be used later to display any items/products that are in the cart.  In our `<CartModal />` component we will have more logic based on the value of `props.cart.total_unique_items`.  
 
-*It's important to distinct between `total_items` and `total_unique_items`, we only care about the unique items because those are the items that get displayed.*
+*It's important to distinct between `total_items` and `total_unique_items`, we only care about the ***unique*** items because those are the items that get displayed.*
 
 Let's take a look at our `<CartModal />` component and setup what will get displayed if the `total_unique_items` is zero: 
 
@@ -337,7 +337,7 @@ Let's take a look at our `<CartModal />` component and setup what will get displ
 
 ### STEP 4. Listing Items/Products in Cart:
 
-Now it's time to add code so that we can display any items/products in our cart.  We will create another component `<CartItems />` that will be used to render our data.  If you recall we've been passing our cart object in state but for our items, we only need data about each item.  The Commerce.js SDK wonderfully provides all necessary data within the `line_items` property.  Take a look: 
+Now it's time to add code so that we can display any items/products in our cart.  We will create another component `<CartItems />` that will be used to render our data.  If you recall we've been passing our cart object in state - but for OUR items, we only need data about each item.  The Commerce.js SDK wonderfully provides all necessary data within the `line_items` property.  Take a look: 
 
 ![](src/img/line-items.JPG)
 
@@ -359,7 +359,7 @@ In order to make sure we're listing all items in our cart we need to map over th
 )
 ```
 
-Now that we have gone a level deeper in our cart object (`line_items`) - within our `<CartItems />` component we can asceses data associated with each item.  
+Now that we have gone a level deeper in our cart object (`line_items`) - within our `<CartItems />` component we can access data associated with each item.  
 
 ![](src/img/item.JPG)
 
@@ -462,7 +462,7 @@ const emptyCart = () => {
 
 This is why we want this function to live in the component where our cart object in state was created.  It makes it simple and easy to update state whenever there are any changes to the cart.  And because our state cart object is being shared across components - any updates to cart triggers a re-render.  This way our cart object is always up to date and our UI is connected to the data within the cart object. 
 
-*You will notice we're setting our cart object to `null`. Based on how your logic is setup this could be an empty array `[]` or `undefined` ect... - this will be up to you and how you're logic is setup.  Because our <App /> component is retrieving a new cart each render or refresh, `null` will be overwritten.*   
+- *You will notice we're setting our cart object to `null`. Based on how your logic is setup this could be an empty array `[]` or `undefined` ect... - this will be up to you and how you might set things up.  Because our <App /> component is retrieving a new cart each render or refresh, `null` will be overwritten.*   
 
 ![](src/img/empty-cart-button.JPG)
 
@@ -474,7 +474,7 @@ Lastly, it's time to add the capability to increase/descrease the item quanity. 
 
 #### Let's add the necessary buttons ... 
 
-Our buttons will be added in our `<CartItems />` component. There are many ways to present this feature but in our example will have three elements: 
+Our buttons will be added in our `<CartItems />` component. There are many ways to present this feature, but in our example will have three elements: 
 - Minus button
 - Input
 - Add button
@@ -618,7 +618,7 @@ import { CartItemsContext } from '../App'
 const helpFnc = useContext(CartItemsContext)
 ```
 
-All we need to do now is attach the proper function to an `onClick` for each button.  Further, because our data is being read from our cart object in state and the cart object is being updated with each action - our data will always reflect the correct information, how Awesome!
+All we need to do now is attach the proper function to an `onClick` for each button.  Further, because our data is being read from our cart object in state and the cart object is being updated with each action - our data will always reflect the correct information, how awesome!
 
 ```javascript
 // *** CartItems.js ***
@@ -667,10 +667,10 @@ Wheew! Let's take a step back and quickly summarize what we acommplished.
 
 Thanks to the Commerce.js SDK and all the usefull methods/functions that come with the commerce object - **updating/refreshing/adding** to your cart becomes straighforward and easy to manage.  You setup your global state for the cart and pass that data throughout your app.  
 
-If you happen to be advanced in react you can implement redux for state managment and initialize your store with the cart object.  There are many ways to design and layout your eCommerce app but the most important factor is getting the neccessary data in order to provide a smooth user experience when selecting a product and adding to the cart.  
+If you happen to be advanced in react you can implement redux for state managment and initialize your store with the cart object.  There are many ways to design and layout your eCommerce app - but the most important factor is getting the neccessary data in order to provide a smooth user experience when selecting a product and adding to the cart.  
 
-I hope this guide helps with using the Commerce.js SDK in your react project.  Lastly this guide is a continuation of a previous guide:
- - [Listing Products in Catalog](https://github.com/kingmoc/product-list-cjs-react) - so check that out if you're just starting out and need help with getting your products listing on the page.  
+This guide is a continuation of a previous guide:
+ - [Listing Products in Catalog](https://github.com/kingmoc/product-list-cjs-react) - check that out if you're just starting out and need help with getting your products listed on the page.  
 
 [LIVE DEMO](https://seities-store-cjs-react-guide.netlify.com/)
 
