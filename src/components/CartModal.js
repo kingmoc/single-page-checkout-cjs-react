@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import { Button, Modal, Image, Header, Item } from 'semantic-ui-react';
 
 import cartImg from '../img/cartImg.png'
@@ -7,6 +8,15 @@ import CartItems from './CartItems'
 const CartModal = (props) => {
 
     console.log(props.cart, 'cart info inside CartModal!!')
+
+    let history = useHistory()
+    console.log(history, 'route props')
+
+    const goToCheckout = e => {
+        history.push(`/checkout/${props.cart.id}`)
+        props.setModalOpen(false)
+    }
+
 
     return (
         <>
@@ -28,6 +38,14 @@ const CartModal = (props) => {
                             onClick={props.emptyCart}
                         >
                             Empty Cart
+                        </Button>
+                        <Button 
+                            floated='left' 
+                            size='big' 
+                            color='blue' 
+                            onClick={goToCheckout}
+                        >
+                            Checkout
                         </Button>
                         <Header floated='right'>{props.cart.subtotal.formatted_with_symbol}</Header>
                     </Modal.Actions>

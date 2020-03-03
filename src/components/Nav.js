@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Menu, Image, Icon, Segment, Input, Modal, Label } from 'semantic-ui-react'
 import logo from '../img/logo.png'
 
 import CartModal from './CartModal'
 
 const Nav = (props) => {
+
+    const [modalOpen, setModalOpen] = useState(false)
 
     const iconDisplay = () => {
 
@@ -33,8 +35,15 @@ const Nav = (props) => {
                     <Input icon='search' placeholder='Search...' />
                 </Menu.Item>
                 <Menu.Item>
-                    <Modal trigger={iconDisplay()} className='cart-model' closeIcon>
-                        <CartModal cart={props.cart} emptyCart={props.emptyCart}/>
+                    <Modal 
+                        trigger={iconDisplay()}
+                        open={modalOpen}
+                        onOpen={() => setModalOpen(true)} 
+                        onClose={() => setModalOpen(false)} 
+                        className='cart-model' 
+                        closeIcon
+                    >
+                        <CartModal cart={props.cart} emptyCart={props.emptyCart} setModalOpen={setModalOpen}/>
                     </Modal>
                 </Menu.Item>
             </Segment>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Route } from 'react-router-dom'
 import Commerce from '@chec/commerce.js'
 import { Grid } from 'semantic-ui-react';
 
@@ -7,6 +8,7 @@ import Nav from './components/Nav'
 import LeftPanel from './components/LeftPanel'
 import Footer from './components/Footer'
 import ProductContainer from './components/ProductContainer'
+import Checkout from './components/Checkout'
 
 export const CartItemsContext = React.createContext()
 
@@ -84,14 +86,28 @@ function App() {
 
             <Grid centered stackable padded relaxed>
                 <Grid.Column className='left-column' width={5}>
-                    <LeftPanel />
+                    {/* <LeftPanel /> */}
+                    <Route exact path="/" component={LeftPanel} />
                 </Grid.Column>
                 <Grid.Column width={9}>
-                    <ProductContainer 
-                        addToCart={addToCart} 
-                    />
+                    <Route exact path="/" render={props => {
+                        return (
+                            <ProductContainer 
+                                {...props}
+                                addToCart={addToCart}
+                            />
+                        )
+                    }}/>
                 </Grid.Column>
             </Grid>
+            {/* Route to Checkout */}
+            <Route path="/checkout/:id" render={props => {
+                return (
+                    <Checkout 
+                        {...props}
+                    />
+                )
+            }}/>
             <Footer />
 
         </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Image, Button, Icon, Dropdown } from 'semantic-ui-react';
 
 const ProductCard = (props) => {
-    console.log(props.product, 'props from Container')
+    // console.log(props.product, 'props from Container')
 
     const [sizes, setSizes] = useState([])
     const [variantInfo, setVariantInfo] = useState()
