@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Grid, Item, Header } from 'semantic-ui-react';
+import { Form, Grid, Item, Header, Container, Segment, Divider, Dropdown } from 'semantic-ui-react';
 import Commerce from '@chec/commerce.js'
 
 // Import Selections
@@ -39,16 +39,24 @@ const CheckoutContainer = (props) => {
                 <Grid.Column width={8}>
                     {liveObject && tokenId && <CheckoutForm liveObject={liveObject} tokenId={tokenId} />}
                 </Grid.Column>
-                <Grid.Column width={5}>
-                    <Item.Group>
+                <Grid.Column width={6}>
+                    <Segment padded>
                         <Header textAlign='center' size='huge'>Current Cart</Header>
                         {liveObject && liveObject.line_items.map(item => (
-                            <Item key={item.id}>
-                                <CheckoutItems item={item} />
-                            </Item>
+                            <Container className='item-data-container' key={item.id}>
+                                <CheckoutItems item={item} key={item.id}/>
+                            </Container>
                         ))}
-                    </Item.Group>
-                    {liveObject && <Header floated='right'>Total = {liveObject.total.formatted_with_symbol}</Header>}      
+                    <Divider horizontal>Shipping Options</Divider>
+                    <Dropdown
+                        placeholder='Select Shipping Method'
+                        fluid
+                        selection
+                        // options={friendOptions}
+                    />      
+                    <Divider horizontal>Cart Totals</Divider>
+                    {liveObject && <Header textAlign='center' size='large'>{liveObject.total.formatted_with_symbol}</Header>}
+                    </Segment>
                 </Grid.Column>
             </Grid.Row>
         </Grid>

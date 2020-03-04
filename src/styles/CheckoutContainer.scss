@@ -1,0 +1,27 @@
+.checkout-row {
+    justify-content: space-evenly !important;
+}
+
+.item-data-container {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+
+    .item-group-name-size {
+        display: flex;
+        flex-direction: column;
+
+        h3 {
+            color: #ea5d5d;
+            margin: 0;
+        }
+        span {
+            color: grey; 
+        }
+    }
+
+    h4 {
+        margin: 0
+    }
+}

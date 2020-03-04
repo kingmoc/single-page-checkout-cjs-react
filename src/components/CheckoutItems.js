@@ -7,16 +7,11 @@ const CheckoutItems = (props) => {
 
     return (
         <>
-            <Item.Image size='tiny' src={props.item.image} />
-            <Item.Content verticalAlign='middle'>
-                <Item.Header>{props.item.product_name}</Item.Header>
-                <Item.Meta>
-                    <span>{props.item.variants[0].option_name}</span>
-                </Item.Meta>
-                <Item.Extra className='item-total'>
-                    <Header floated='right'>{props.item.line_total.formatted_with_symbol}</Header>
-                </Item.Extra>
-            </Item.Content>
+            <div className='item-group-name-size'>
+                <h3>{props.item.product_name}</h3>
+                <span>{props.item.variants[0].option_name}</span>
+            </div>
+            <h4>{props.item.line_total.formatted_with_symbol}</h4>
         </>
     );
 };
