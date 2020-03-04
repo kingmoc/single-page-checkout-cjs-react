@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Form } from 'semantic-ui-react';
-// import Commerce from '@chec/commerce.js'
+import Commerce from '@chec/commerce.js'
 
 // Import Selections
 import { monthOptions, yearOptions} from '../utils/cardOptions'
 import { stateOptions } from '../utils/stateOptions'
 
 const CheckoutForm = (props) => {
+    // console.log(props, 'inside checkout form!!')
 
-    // console.log(props, 'props from CheckoutContainer - live object')
-    
+    const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
+
     const [formInfo, setFormInfo] = useState({
         customer: {
             firstname: '',
@@ -37,9 +38,12 @@ const CheckoutForm = (props) => {
     })
 
     useEffect(() => {
-        let li = props.liveObject.line_items.map(item => {
+        let lineItems = {}
 
-            return {
+        props.liveObject.line_items.forEach(item => {
+
+            lineItems = {
+                ...lineItems,
                 [item.id]: {
                     quantity: item.quantity,
                     variants: {
@@ -51,8 +55,8 @@ const CheckoutForm = (props) => {
 
         setFormInfo({
             ...formInfo,
-            line_items: {...li},
-            fullfillment: {
+            line_items: lineItems,
+            fulfillment: {
                 shipping_method: props.liveObject.shipping.available_options[0].id
             }
         })
@@ -78,6 +82,13 @@ const CheckoutForm = (props) => {
                     ...formInfo.shipping,
                     [name]: value,
                     name: `${formInfo.customer.firstname} ${formInfo.customer.lastname}`
+                },
+                billing: {
+                    ...formInfo.billing,
+                    [name]: value,
+                    name: `${formInfo.customer.firstname} ${formInfo.customer.lastname}`,
+                    country: 'US'
+
                 }
             })
         }
@@ -98,8 +109,16 @@ const CheckoutForm = (props) => {
 
     const handleSubmit = e => {
         e.preventDefault()
+
+        // console.log(formInfo, 'info that is being submitted to capture!')
         
-        console.log(formInfo, 'form info after submit!!!!')
+        commerce.checkout.capture(props.tokenId, formInfo)
+            .then(res => {
+                console.log(res, 'res from CAPTURING CHECKOUT!!!')
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     return (

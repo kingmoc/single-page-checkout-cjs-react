@@ -15,6 +15,7 @@ const CheckoutContainer = (props) => {
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
 
     const [liveObject, setLiveObject] = useState()
+    const [tokenId, setTokenId] = useState()
 
     useEffect(() => {
         let cartId = props.match.params.id
@@ -22,6 +23,7 @@ const CheckoutContainer = (props) => {
             .then(res => {
                 console.log(res, 'response from generating checkout Token')
                 setLiveObject(res.live)
+                setTokenId(res.id)
             })
             .catch(err => {
                 console.log(err)
@@ -35,7 +37,7 @@ const CheckoutContainer = (props) => {
         <Grid columns={2} centered padded>
             <Grid.Row className='checkout-row'>
                 <Grid.Column width={8}>
-                    {liveObject && <CheckoutForm liveObject={liveObject}/>}
+                    {liveObject && tokenId && <CheckoutForm liveObject={liveObject} tokenId={tokenId} />}
                 </Grid.Column>
                 <Grid.Column width={5}>
                     <Item.Group>
