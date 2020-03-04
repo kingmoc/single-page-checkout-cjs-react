@@ -10,7 +10,7 @@ const CartModal = (props) => {
     console.log(props.cart, 'cart info inside CartModal!!')
 
     let history = useHistory()
-    console.log(history, 'route props')
+    // console.log(history, 'route props')
 
     const goToCheckout = e => {
         history.push(`/checkout/${props.cart.id}`)

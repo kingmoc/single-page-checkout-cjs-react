@@ -9,6 +9,7 @@ import { stateOptions } from '../utils/stateOptions'
 // Component Imports
 import CheckoutForm from './CheckoutForm'
 import CheckoutItems from './CheckoutItems'
+import { Link } from 'react-router-dom';
 
 const CheckoutContainer = (props) => {
 
@@ -32,6 +33,10 @@ const CheckoutContainer = (props) => {
         props.setCheckout(true)
     },[])
 
+    const handleReturnCart = e => {
+        props.setModalOpen(true)
+    }
+
 
     return (
         <Grid columns={2} centered padded>
@@ -42,6 +47,7 @@ const CheckoutContainer = (props) => {
                 <Grid.Column width={6}>
                     <Segment padded>
                         <Header textAlign='center' size='huge'>Current Cart</Header>
+                        <Header onClick={handleReturnCart} textAlign='center'><Link to='/'>Return to Cart</Link></Header>
                         {liveObject && liveObject.line_items.map(item => (
                             <Container className='item-data-container' key={item.id}>
                                 <CheckoutItems item={item} key={item.id}/>

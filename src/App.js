@@ -18,6 +18,7 @@ function App() {
 
     const [cart, setCart] = useState()
     const [checkout, setCheckout] = useState(false)
+    const [modalOpen, setModalOpen] = useState(false)
 
     useEffect(() => {
         commerce.cart.retrieve()
@@ -82,16 +83,14 @@ function App() {
         <div className="App">
 
             <CartItemsContext.Provider value={cartHelperFunctions}>
-                <Nav cart={cart} emptyCart={emptyCart} checkout={checkout} setCheckout={setCheckout}/>
-                {/* <Route exact path="/" render={props => {
-                    return (
-                        <Nav 
-                            {...props}
-                            cart={cart}
-                            emptyCart={emptyCart}
-                        />
-                    )
-                }}/> */}
+                <Nav 
+                    cart={cart} 
+                    emptyCart={emptyCart} 
+                    checkout={checkout} 
+                    setCheckout={setCheckout}
+                    modalOpen={modalOpen}
+                    setModalOpen={setModalOpen}
+                />
             </CartItemsContext.Provider>
 
             <Grid centered stackable padded relaxed>
@@ -117,6 +116,7 @@ function App() {
                     <CheckoutContainer 
                         {...props}
                         setCheckout={setCheckout}
+                        setModalOpen={setModalOpen}
                     />
                 )
             }}/>

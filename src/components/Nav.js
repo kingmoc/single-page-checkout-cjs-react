@@ -6,7 +6,9 @@ import CartModal from './CartModal'
 
 const Nav = (props) => {
 
-    const [modalOpen, setModalOpen] = useState(false)
+    // const [modalOpen, setModalOpen] = useState(false)
+
+    // props.modalOpen 
 
     const iconDisplay = () => {
 
@@ -44,16 +46,16 @@ const Nav = (props) => {
                 <Menu.Item>
                     <Modal 
                         trigger={iconDisplay()}
-                        open={modalOpen}
-                        onOpen={() => setModalOpen(true)} 
-                        onClose={() => setModalOpen(false)} 
+                        open={props.modalOpen}
+                        onOpen={() => props.setModalOpen(true)} 
+                        onClose={() => props.setModalOpen(false)} 
                         className='cart-model' 
                         closeIcon
                     >
                         <CartModal 
                             cart={props.cart} 
                             emptyCart={props.emptyCart} 
-                            setModalOpen={setModalOpen}
+                            setModalOpen={props.setModalOpen}
                             setCheckout={props.setCheckout}
                         />
                     </Modal>
