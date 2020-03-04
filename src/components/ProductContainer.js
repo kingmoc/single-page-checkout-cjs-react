@@ -16,6 +16,8 @@ const ProductContainer = (props) => {
             setProducts(res.data)
           })
           .catch(err => console.log(err))
+
+          props.setCheckout(false)
     },[])
 
     return (

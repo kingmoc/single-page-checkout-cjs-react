@@ -10,6 +10,13 @@ const Nav = (props) => {
 
     const iconDisplay = () => {
 
+        if (props.checkout) {
+            return (
+                <>
+                </>
+            )
+        }
+
         if (props.cart && props.cart.total_unique_items > 0) {
             return(
                 <Label color='green' >
@@ -43,7 +50,12 @@ const Nav = (props) => {
                         className='cart-model' 
                         closeIcon
                     >
-                        <CartModal cart={props.cart} emptyCart={props.emptyCart} setModalOpen={setModalOpen}/>
+                        <CartModal 
+                            cart={props.cart} 
+                            emptyCart={props.emptyCart} 
+                            setModalOpen={setModalOpen}
+                            setCheckout={props.setCheckout}
+                        />
                     </Modal>
                 </Menu.Item>
             </Segment>

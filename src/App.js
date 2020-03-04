@@ -8,7 +8,7 @@ import Nav from './components/Nav'
 import LeftPanel from './components/LeftPanel'
 import Footer from './components/Footer'
 import ProductContainer from './components/ProductContainer'
-import Checkout from './components/Checkout'
+import CheckoutContainer from './components/CheckoutContainer'
 
 export const CartItemsContext = React.createContext()
 
@@ -17,6 +17,7 @@ function App() {
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
 
     const [cart, setCart] = useState()
+    const [checkout, setCheckout] = useState(false)
 
     useEffect(() => {
         commerce.cart.retrieve()
@@ -81,7 +82,16 @@ function App() {
         <div className="App">
 
             <CartItemsContext.Provider value={cartHelperFunctions}>
-                <Nav cart={cart} emptyCart={emptyCart}/>
+                <Nav cart={cart} emptyCart={emptyCart} checkout={checkout} setCheckout={setCheckout}/>
+                {/* <Route exact path="/" render={props => {
+                    return (
+                        <Nav 
+                            {...props}
+                            cart={cart}
+                            emptyCart={emptyCart}
+                        />
+                    )
+                }}/> */}
             </CartItemsContext.Provider>
 
             <Grid centered stackable padded relaxed>
@@ -95,6 +105,7 @@ function App() {
                             <ProductContainer 
                                 {...props}
                                 addToCart={addToCart}
+                                setCheckout={setCheckout}
                             />
                         )
                     }}/>
@@ -103,13 +114,13 @@ function App() {
             {/* Route to Checkout */}
             <Route path="/checkout/:id" render={props => {
                 return (
-                    <Checkout 
+                    <CheckoutContainer 
                         {...props}
+                        setCheckout={setCheckout}
                     />
                 )
             }}/>
             <Footer />
-
         </div>
   );
 }

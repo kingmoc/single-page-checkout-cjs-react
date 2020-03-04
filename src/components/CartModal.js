@@ -15,6 +15,7 @@ const CartModal = (props) => {
     const goToCheckout = e => {
         history.push(`/checkout/${props.cart.id}`)
         props.setModalOpen(false)
+        props.setCheckout(true)
     }
 
 
