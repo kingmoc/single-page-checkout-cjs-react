@@ -2,7 +2,7 @@ import React from 'react';
 import { Item, Header } from 'semantic-ui-react';
 
 const CheckoutItems = (props) => {
-    console.log(props, 'props from checkout container')
+    // console.log(props, 'props from checkout container')
 
 
     return (

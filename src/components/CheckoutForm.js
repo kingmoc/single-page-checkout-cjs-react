@@ -24,7 +24,7 @@ const CheckoutForm = (props) => {
             town_city: '',
             county_state: '',
             postal_zip_code: '',
-            country: 'US',
+            country: '',
         },
         payment: {
             gateway: 'test_gateway',
@@ -58,15 +58,14 @@ const CheckoutForm = (props) => {
             ...formInfo,
             line_items: lineItems,
             fulfillment: {
-                shipping_method: props.liveObject.shipping.available_options[0].id
+                shipping_method: props.shipOption
             }
         })
-    }, [])
+    }, [props.shipOption])
 
     useEffect(() => {
 
         if(sameBilling) {
-            console.log('SameBilling is checked')
             setFormInfo({
                 ...formInfo,
                 billing: {...formInfo.shipping}
@@ -96,13 +95,6 @@ const CheckoutForm = (props) => {
                     [name]: value,
                     name: `${formInfo.customer.firstname} ${formInfo.customer.lastname}`
                 },
-                // billing: {
-                //     ...formInfo.billing,
-                //     [name]: value,
-                //     name: `${formInfo.customer.firstname} ${formInfo.customer.lastname}`,
-                //     country: 'US'
-
-                // }
             })
         }
 
@@ -159,12 +151,22 @@ const CheckoutForm = (props) => {
                 <Form.Input fluid id='customer' name='lastname' label='Last name' placeholder='Smith' onChange={handleChanges}/>
                 <Form.Input fluid id='customer' name='email' label='Email' placeholder='xyz@example.com' onChange={handleChanges}/>
             </Form.Group>
-            <Form.Input id='shipping' name='street' label='Address' placeholder='122 Example St' onChange={handleChanges}/>
             <Form.Group>
-                <Form.Input width={6} id='shipping' name='town_city' label='City' placeholder='Las Vegas' onChange={handleChanges}/>
+                <Form.Input width={10} id='shipping' name='street' label='Address' placeholder='122 Example St' onChange={handleChanges}/>
                 <Form.Select 
-                    width={6} label='State' 
-                    placeholder='Search State'
+                    width={6} 
+                    id='shipping' 
+                    name='country' 
+                    label='Select Country' 
+                    placeholder='United States' 
+                    onChange={handleChanges}/>
+            </Form.Group>
+            <Form.Group>
+                <Form.Input width={6} id='shipping' name='town_city' label='Town/City' placeholder='Las Vegas' onChange={handleChanges}/>
+                <Form.Select 
+                    width={6} 
+                    label='County/State/Province' 
+                    placeholder='Search ...'
                     id='shipping'
                     name='county_state' 
                     search 
@@ -173,7 +175,7 @@ const CheckoutForm = (props) => {
                     options={stateOptions}
                     onChange={handleChanges}
                 />
-                <Form.Input width={4} id='shipping' name='postal_zip_code' label='Zip' placeholder='00000' maxLength="5" onChange={handleChanges}/>
+                <Form.Input width={4} id='shipping' name='postal_zip_code' label='Zip/Postal' placeholder='00000' maxLength="5" onChange={handleChanges}/>
             </Form.Group>
             <h1>Payment Info</h1>
             <Form.Group>

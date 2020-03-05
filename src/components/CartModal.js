@@ -35,7 +35,8 @@ const CartModal = (props) => {
                         <Button  
                             basic 
                             negative  
-                            floated='left' 
+                            floated='left'
+                            size='big' 
                             onClick={props.emptyCart}
                         >
                             Empty Cart

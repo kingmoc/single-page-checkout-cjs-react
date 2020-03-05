@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Grid, Item, Header, Container, Segment, Divider, Dropdown } from 'semantic-ui-react';
+import { Form, Grid, Item, Header, Container, Segment, Divider, Dropdown, Input, Button } from 'semantic-ui-react';
 import Commerce from '@chec/commerce.js'
 
 // Import Selections
@@ -17,6 +17,11 @@ const CheckoutContainer = (props) => {
 
     const [liveObject, setLiveObject] = useState()
     const [tokenId, setTokenId] = useState()
+    const [shippingOptions, setShippingOptions] = useState()
+    const [shippingPrice, setShippingPrice] = useState()
+    const [shipOption, setShipOption] = useState()
+    const [discountCode, setDiscountCode] = useState()
+
 
     useEffect(() => {
         let cartId = props.match.params.id
@@ -33,16 +38,75 @@ const CheckoutContainer = (props) => {
         props.setCheckout(true)
     },[])
 
+    useEffect(() => {
+        let shippingOptionsArray = []
+
+        if(liveObject) {
+            shippingOptionsArray = liveObject.shipping.available_options.map(option => {
+                console.log(option, 'option from inital shipping property')
+                let sizeInfo = {}
+    
+                sizeInfo.key = option.id
+                sizeInfo.text = `${option.description}(${option.price.formatted_with_code})`
+                // sizeInfo.value = option.price.raw
+                sizeInfo.value = option.id
+    
+                return sizeInfo
+            })
+        }
+
+        setShippingOptions(shippingOptionsArray)
+
+    }, [liveObject])
+
     const handleReturnCart = e => {
         props.setModalOpen(true)
     }
+
+    const handleDropDownShipping = (e, {value, options}) => {
+
+        console.log(value, 'value')
+        console.log(options, 'options')
+        
+
+        // commerce.checkout.checkShippingOption(tokenId, {
+        //     id: value,
+        //     // country: "US"
+        // })
+        //     .then(res => {  
+        //         console.log(res, 'res from checking discount code')
+        //         // setLiveObject(res.live)
+        //     })
+        //     .catch(err => console.log(err))
+
+    }
+
+    const handleDiscountCode = (e, {value}) => {
+        setDiscountCode(value)
+    }
+    
+    const handleDiscountClick = (e, {value}) => {
+        e.preventDefault()
+        console.log(discountCode, 'Discount Code')
+
+        commerce.checkout.checkDiscount(tokenId, {code: discountCode})
+            .then(res => {  
+                console.log(res, 'res from checking discount code')
+                setLiveObject(res.live)
+            })
+            .catch(err => console.log(err))
+
+    }
+
 
 
     return (
         <Grid columns={2} centered padded>
             <Grid.Row className='checkout-row'>
                 <Grid.Column width={8}>
-                    {liveObject && tokenId && <CheckoutForm liveObject={liveObject} tokenId={tokenId} />}
+                    {liveObject && tokenId && (
+                        <CheckoutForm liveObject={liveObject} tokenId={tokenId} shipOption={shipOption}/>
+                    )}
                 </Grid.Column>
                 <Grid.Column width={6}>
                     <Segment padded>
@@ -58,10 +122,24 @@ const CheckoutContainer = (props) => {
                         placeholder='Select Shipping Method'
                         fluid
                         selection
-                        // options={friendOptions}
-                    />      
+                        onChange={handleDropDownShipping}
+                        options={shippingOptions}
+                    /> 
+                    <Divider horizontal>Discount Code</Divider>
+                    <form className='discount-code'>
+                        <Input onChange={handleDiscountCode} />
+                        <Button color='black' onClick={handleDiscountClick}>Apply</Button>     
+                    </form>
                     <Divider horizontal>Cart Totals</Divider>
-                    {liveObject && <Header textAlign='center' size='large'>{liveObject.total.formatted_with_symbol}</Header>}
+                    {liveObject && (
+                        <Header textAlign='center' size='large'>
+                            {
+                                shippingPrice ? `$${(liveObject.total.raw + shippingPrice).toFixed(2)}`  
+                                : 
+                                liveObject.total.formatted_with_symbol
+                            }
+                        </Header>
+                    )}
                     </Segment>
                 </Grid.Column>
             </Grid.Row>
