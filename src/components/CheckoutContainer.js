@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Grid, Item, Header, Container, Segment, Divider, Dropdown, Input, Button } from 'semantic-ui-react';
+import { Form, Grid, Item, Header, Container, Segment, Divider, Dropdown, Input, Button, Select } from 'semantic-ui-react';
 import Commerce from '@chec/commerce.js'
 
 // Import Selections
@@ -38,46 +38,47 @@ const CheckoutContainer = (props) => {
         props.setCheckout(true)
     },[])
 
-    useEffect(() => {
-        let shippingOptionsArray = []
+    const getShippingOptions = (countrySymbol) => {
 
-        if(liveObject) {
-            shippingOptionsArray = liveObject.shipping.available_options.map(option => {
-                console.log(option, 'option from inital shipping property')
-                let sizeInfo = {}
-    
-                sizeInfo.key = option.id
-                sizeInfo.text = `${option.description}(${option.price.formatted_with_code})`
-                // sizeInfo.value = option.price.raw
-                sizeInfo.value = option.id
-    
-                return sizeInfo
+        console.log(countrySymbol, 'country from form selection')
+
+        if (countrySymbol) {
+            commerce.checkout.getShippingOptions(tokenId, {
+                country: countrySymbol
             })
+                .then(res => {
+                    // console.log(res, 'res from getting Shipping options by country')
+                    let shippingOptionsArray = res.map(option => {
+                        let shInfo = {}
+    
+                        shInfo.key = countrySymbol
+                        shInfo.text = `${option.description}(${option.price.formatted_with_code})`
+                        shInfo.value = option.id
+            
+                        return shInfo
+                    })
+                    setShippingOptions(shippingOptionsArray)
+                })
+                .catch(err => console.log(err))
         }
-
-        setShippingOptions(shippingOptionsArray)
-
-    }, [liveObject])
+    }
 
     const handleReturnCart = e => {
         props.setModalOpen(true)
     }
 
-    const handleDropDownShipping = (e, {value, options}) => {
+    const handleDropDownShipping = (e, {value, options}) => {  
 
-        console.log(value, 'value')
-        console.log(options, 'options')
-        
-
-        // commerce.checkout.checkShippingOption(tokenId, {
-        //     id: value,
-        //     // country: "US"
-        // })
-        //     .then(res => {  
-        //         console.log(res, 'res from checking discount code')
-        //         // setLiveObject(res.live)
-        //     })
-        //     .catch(err => console.log(err))
+        commerce.checkout.checkShippingOption(tokenId, {
+            id: value,
+            country: options[0].key
+        })
+            .then(res => {  
+                console.log(res, 'res from checking discount code')
+                setShipOption(value)
+                setLiveObject(res.live) 
+            })
+            .catch(err => console.log(err))
 
     }
 
@@ -98,14 +99,17 @@ const CheckoutContainer = (props) => {
 
     }
 
-
-
     return (
         <Grid columns={2} centered padded>
             <Grid.Row className='checkout-row'>
                 <Grid.Column width={8}>
                     {liveObject && tokenId && (
-                        <CheckoutForm liveObject={liveObject} tokenId={tokenId} shipOption={shipOption}/>
+                        <CheckoutForm 
+                            liveObject={liveObject} 
+                            tokenId={tokenId} 
+                            shipOption={shipOption}
+                            getShippingOptions={getShippingOptions}
+                        />
                     )}
                 </Grid.Column>
                 <Grid.Column width={6}>
@@ -117,29 +121,29 @@ const CheckoutContainer = (props) => {
                                 <CheckoutItems item={item} key={item.id}/>
                             </Container>
                         ))}
-                    <Divider horizontal>Shipping Options</Divider>
-                    <Dropdown
-                        placeholder='Select Shipping Method'
-                        fluid
-                        selection
-                        onChange={handleDropDownShipping}
-                        options={shippingOptions}
-                    /> 
-                    <Divider horizontal>Discount Code</Divider>
-                    <form className='discount-code'>
-                        <Input onChange={handleDiscountCode} />
-                        <Button color='black' onClick={handleDiscountClick}>Apply</Button>     
-                    </form>
-                    <Divider horizontal>Cart Totals</Divider>
-                    {liveObject && (
-                        <Header textAlign='center' size='large'>
-                            {
-                                shippingPrice ? `$${(liveObject.total.raw + shippingPrice).toFixed(2)}`  
-                                : 
-                                liveObject.total.formatted_with_symbol
-                            }
-                        </Header>
-                    )}
+                        <Divider horizontal>Shipping Options</Divider>
+                        <Select
+                            placeholder='Select Shipping Method'
+                            fluid
+                            selection
+                            onChange={handleDropDownShipping}
+                            options={shippingOptions}
+                        />
+                        {!shipOption && <p>Please select shipping Method</p>} 
+                        <Divider horizontal>Discount Code</Divider>
+                        <form className='discount-code'>
+                            <Input onChange={handleDiscountCode} />
+                            <Button color='black' onClick={handleDiscountClick}>Apply</Button>     
+                        </form>
+                        <Divider horizontal>Cart Totals</Divider>
+                        
+                        {liveObject && (
+                            <>
+                                {shipOption && <Header color='olive' textAlign='center'>(Shipping) +{liveObject.shipping.price.formatted}</Header>}
+                                {liveObject.discount.length !== 0 && <Header color='olive' textAlign='center'>(Discount Code) -{liveObject.discount.amount_saved.formatted}</Header>}
+                                <Header textAlign='center' size='large'>{liveObject.total.formatted_with_symbol}</Header>
+                            </>
+                        )}
                     </Segment>
                 </Grid.Column>
             </Grid.Row>
