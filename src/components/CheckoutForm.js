@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import { Form } from 'semantic-ui-react';
 import Commerce from '@chec/commerce.js'
 
@@ -13,6 +14,8 @@ const CheckoutForm = (props) => {
     // console.log(props, 'inside checkout form!!')
 
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
+
+    let history = useHistory()
 
     const [sameBilling, setSameBilling] = useState(false)
     const [formInfo, setFormInfo] = useState({
@@ -139,6 +142,8 @@ const CheckoutForm = (props) => {
                     name: `${formInfo.customer.firstname} ${formInfo.customer.lastname}`
                 },
             })
+
+            props.setShipOption(false)
         }
 
         if (id === 'shipping' && sameBilling) {
@@ -187,15 +192,18 @@ const CheckoutForm = (props) => {
 
         if (props.shipOption) {
             console.log('ready to process')
+            commerce.checkout.capture(props.tokenId, formInfo)
+                .then(res => {
+                    console.log(res, 'res from CAPTURING CHECKOUT!!!')
+                    props.setReceipt(res)
+                    localStorage.removeItem('cart-id')
+                    history.push(`/order-complete/${props.tokenId}/${res.id}`)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
         }
         
-        // commerce.checkout.capture(props.tokenId, formInfo)
-        //     .then(res => {
-        //         console.log(res, 'res from CAPTURING CHECKOUT!!!')
-        //     })
-        //     .catch(err => {
-        //         console.log(err)
-        //     })
 
     }
 
@@ -204,15 +212,46 @@ const CheckoutForm = (props) => {
     }
 
     return (
-        <Form className='checkout-form' onSubmit={handleSubmit}>
+        <Form className='checkout-form' onSubmit={handleSubmit} loading={false}>
             <h1>Customer Info</h1>
             <Form.Group widths='equal'>
-                <Form.Input required fluid id='customer' name='firstname' label='First name' placeholder='John' onChange={handleChanges} />
-                <Form.Input required fluid id='customer' name='lastname' label='Last name' placeholder='Smith' onChange={handleChanges} />
-                <Form.Input required fluid id='customer' name='email' label='Email' placeholder='xyz@example.com' onChange={handleChanges} type='email' />
+                <Form.Input 
+                    required 
+                    fluid 
+                    id='customer' 
+                    name='firstname' 
+                    label='First name' 
+                    placeholder='John' 
+                    onChange={handleChanges} 
+                />
+                <Form.Input 
+                    required 
+                    fluid 
+                    id='customer' 
+                    name='lastname' 
+                    label='Last name' 
+                    placeholder='Smith' 
+                    onChange={handleChanges} 
+                />
+                <Form.Input 
+                    required 
+                    fluid 
+                    id='customer' 
+                    name='email' 
+                    label='Email' 
+                    placeholder='xyz@example.com' 
+                    onChange={handleChanges} type='email' 
+                />
             </Form.Group>
             <Form.Group>
-                <Form.Input required width={10} id='shipping' name='street' label='Address' placeholder='122 Example St' onChange={handleChanges}/>
+                <Form.Input 
+                    required width={10} 
+                    id='shipping' 
+                    name='street' 
+                    label='Address' 
+                    placeholder='122 Example St' 
+                    onChange={handleChanges}
+                />
                 <Form.Select
                     required 
                     width={6} 
@@ -225,7 +264,15 @@ const CheckoutForm = (props) => {
                 />
             </Form.Group>
             <Form.Group>
-                <Form.Input required width={6} id='shipping' name='town_city' label='Town/City' placeholder='Las Vegas' onChange={handleChanges}/>
+                <Form.Input 
+                    required 
+                    width={6} 
+                    id='shipping' 
+                    name='town_city' 
+                    label='Town/City' 
+                    placeholder='Las Vegas' 
+                    onChange={handleChanges}
+                />
                 <Form.Select
                     required 
                     width={6} 
@@ -239,24 +286,83 @@ const CheckoutForm = (props) => {
                     options={getCountryInfoShipping()}
                     onChange={handleChanges}
                 />
-                <Form.Input required width={4} id='shipping' name='postal_zip_code' label='Zip/Postal' placeholder='00000' maxLength="5" onChange={handleChanges}/>
+                <Form.Input
+                    type='number' 
+                    required width={4} 
+                    id='shipping' 
+                    name='postal_zip_code' 
+                    label='Zip/Postal' 
+                    placeholder='00000' 
+                    maxLength="5"
+                    onChange={handleChanges}
+                />
             </Form.Group>
             <h1>Payment Info</h1>
             <Form.Group>
-                <Form.Input required id='payment' name='number' label='Credit Card Number' placeholder='0000111100001111' onChange={handleChanges}/>
-                <Form.Input required id='payment' name='postal_zip_code' label='Billing Zip' placeholder='Enter Billing Zip Code' onChange={handleChanges}/>
+                <Form.Input
+                    type='number' 
+                    required id='payment' 
+                    name='number' 
+                    label='Credit Card Number' 
+                    placeholder='0000111100001111' 
+                    onChange={handleChanges}
+                />
+                <Form.Input
+                    type='number'
+                    maxLength="5" 
+                    required id='payment' 
+                    name='postal_zip_code' 
+                    label='Billing Zip' 
+                    placeholder='Enter Billing Zip Code' 
+                    onChange={handleChanges}
+                />
             </Form.Group>
             <Form.Group>
-                <Form.Select required id='payment' width={3} name='expiry_month' fluid options={monthOptions} label='Month' placeholder='02' onChange={handleChanges}/>
-                <Form.Select required id='payment' width={3} name='expiry_year' fluid options={yearOptions} label='Year' placeholder='23' onChange={handleChanges}/>
-                <Form.Input required id='payment' width={3} name='cvc' fluid label='CVV' placeholder='123' type='password' maxLength="3" onChange={handleChanges}/>
+                <Form.Select 
+                    required 
+                    id='payment' 
+                    width={3} 
+                    name='expiry_month' 
+                    fluid options={monthOptions} 
+                    label='Month' 
+                    placeholder='02' 
+                    onChange={handleChanges}
+                />
+                <Form.Select 
+                    required 
+                    id='payment' 
+                    width={3} 
+                    name='expiry_year' 
+                    fluid 
+                    options={yearOptions} 
+                    label='Year' 
+                    placeholder='23' 
+                    onChange={handleChanges}
+                />
+                <Form.Input 
+                    required id='payment' 
+                    width={3} name='cvc' 
+                    fluid label='CVV' 
+                    placeholder='123' 
+                    type='password' 
+                    maxLength="3" 
+                    onChange={handleChanges}
+                />
             </Form.Group>
             <h1>Billing Address</h1>
             <Form.Checkbox label='Billing Address Same as Shipping ...' onChange={handleCheckBox} />
             {!sameBilling && (
                 <>
                     <Form.Group widths='equal'>
-                        <Form.Input required width={10} id='billing' name='name' label='Billing Name' placeholder='John Smith' onChange={handleChanges}/>
+                        <Form.Input 
+                            required 
+                            width={10} 
+                            id='billing' 
+                            name='name' 
+                            label='Billing Name' 
+                            placeholder='John Smith' 
+                            onChange={handleChanges}
+                        />
                         <Form.Select
                             required    
                             width={6} 
@@ -269,8 +375,23 @@ const CheckoutForm = (props) => {
                         />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Input required width={5} id='billing' name='street' label='Address' placeholder='122 Example St' onChange={handleChanges}/>
-                        <Form.Input required width={3} id='billing' name='town_city' label='City' placeholder='Las Vegas' onChange={handleChanges}/>
+                        <Form.Input 
+                            required width={5} 
+                            id='billing' 
+                            name='street' 
+                            label='Address' 
+                            placeholder='122 Example St' 
+                            onChange={handleChanges}
+                        />
+                        <Form.Input 
+                            required 
+                            width={3} 
+                            id='billing' 
+                            name='town_city' 
+                            label='City' 
+                            placeholder='Las Vegas' 
+                            onChange={handleChanges}
+                        />
                         <Form.Select
                             required
                             width={6} 
@@ -284,7 +405,16 @@ const CheckoutForm = (props) => {
                             options={getCountryInfoBilling()}
                             onChange={handleChanges}
                         />
-                        <Form.Input required width={2} id='billing' name='postal_zip_code' label='Zip' placeholder='00000' maxLength="5" onChange={handleChanges}/>
+                        <Form.Input 
+                            type='number' 
+                            required width={2} 
+                            id='billing' 
+                            name='postal_zip_code' 
+                            label='Zip' 
+                            placeholder='00000' 
+                            maxLength="5" 
+                            onChange={handleChanges}
+                        />
                     </Form.Group>
                 </>
             )}

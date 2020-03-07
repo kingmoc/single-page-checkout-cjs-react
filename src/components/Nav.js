@@ -3,6 +3,7 @@ import { Menu, Image, Icon, Segment, Input, Modal, Label } from 'semantic-ui-rea
 import logo from '../img/logo.png'
 
 import CartModal from './CartModal'
+import { Link } from 'react-router-dom';
 
 const Nav = (props) => {
 
@@ -38,7 +39,7 @@ const Nav = (props) => {
         <Menu borderless> 
             <Segment className='nav-segment'>
                 <Menu.Item>
-                    <Image src={logo} size='tiny' />
+                    <Link to='/'><Image src={logo} size='tiny' /></Link>
                 </Menu.Item>
                 <Menu.Item position='right'>
                     <Input icon='search' placeholder='Search...' />

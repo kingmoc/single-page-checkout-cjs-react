@@ -9,6 +9,8 @@ import LeftPanel from './components/LeftPanel'
 import Footer from './components/Footer'
 import ProductContainer from './components/ProductContainer'
 import CheckoutContainer from './components/CheckoutContainer'
+import CheckoutComplete from './components/CheckoutComplete'
+import PrivateRoute from './utils/PrivateRoute'
 
 export const CartItemsContext = React.createContext()
 
@@ -19,6 +21,7 @@ function App() {
     const [cart, setCart] = useState()
     const [checkout, setCheckout] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
+    const [receipt, setReceipt] = useState()
 
     useEffect(() => {
         commerce.cart.retrieve()
@@ -111,12 +114,28 @@ function App() {
                 </Grid.Column>
             </Grid>
             {/* Route to Checkout */}
-            <Route path="/checkout/:id" render={props => {
+            {/* <PrivateRoute path="/checkout/:id" render={props => {
                 return (
                     <CheckoutContainer 
                         {...props}
                         setCheckout={setCheckout}
                         setModalOpen={setModalOpen}
+                        setReceipt={setReceipt}
+                    />
+                )
+            }}/> */}
+            <PrivateRoute 
+                path={`/checkout/:id`} 
+                setCheckout={setCheckout}
+                setModalOpen={setModalOpen}
+                setReceipt={setReceipt}
+                component={CheckoutContainer}
+            />
+            <Route path="/order-complete/:checkoutToken/:orderId" render={props => {
+                return (
+                    <CheckoutComplete 
+                        {...props}
+                        // receipt={receipt}
                     />
                 )
             }}/>

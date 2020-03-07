@@ -14,6 +14,7 @@ const CartModal = (props) => {
 
     const goToCheckout = e => {
         history.push(`/checkout/${props.cart.id}`)
+        localStorage.setItem('cart-id', props.cart.id)
         props.setModalOpen(false)
         props.setCheckout(true)
     }

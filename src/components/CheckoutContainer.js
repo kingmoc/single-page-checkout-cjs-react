@@ -12,6 +12,7 @@ import CheckoutItems from './CheckoutItems'
 import { Link } from 'react-router-dom';
 
 const CheckoutContainer = (props) => {
+    console.log(props, 'Checking prop being sent from Private Route!!!!!!')
 
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
 
@@ -109,6 +110,8 @@ const CheckoutContainer = (props) => {
                             tokenId={tokenId} 
                             shipOption={shipOption}
                             getShippingOptions={getShippingOptions}
+                            setShipOption={setShipOption}
+                            setReceipt={props.setReceipt}
                         />
                     )}
                 </Grid.Column>
