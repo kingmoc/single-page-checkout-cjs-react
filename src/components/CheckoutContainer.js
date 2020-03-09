@@ -121,7 +121,7 @@ const CheckoutContainer = (props) => {
                         <Header onClick={handleReturnCart} textAlign='center'><Link to='/'>Return to Cart</Link></Header>
                         {liveObject && liveObject.line_items.map(item => (
                             <Container className='item-data-container' key={item.id}>
-                                <CheckoutItems item={item} key={item.id}/>
+                                <CheckoutItems item={item}/>
                             </Container>
                         ))}
                         <Divider horizontal>Shipping Options</Divider>

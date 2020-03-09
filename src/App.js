@@ -29,7 +29,7 @@ function App() {
                 console.log(res, 'response from app useEffect')
                 setCart(res)
             })
-    },[])
+    },[receipt])
 
     const cartHelperFunctions = {
 

@@ -15,7 +15,7 @@ const CheckoutComplete = () => {
 
     useEffect(() => {
         
-        commerce.checkout.receipt('chkt_Vw7prN84MD0ejo')
+        commerce.checkout.receipt(checkoutToken)
             .then(res=> {
                 console.log(res, 'res from reciept call')
             })

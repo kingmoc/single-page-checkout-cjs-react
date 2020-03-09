@@ -18,6 +18,7 @@ const CheckoutForm = (props) => {
     let history = useHistory()
 
     const [sameBilling, setSameBilling] = useState(false)
+    const [payGate, setPayGate] = useState()
     const [formInfo, setFormInfo] = useState({
         customer: {
             firstname: '',
@@ -33,7 +34,7 @@ const CheckoutForm = (props) => {
             country: '',
         },
         payment: {
-            gateway: 'test_gateway',
+            gateway: '',
             card: {
                 number: '',
                 expiry_month: '',
@@ -167,6 +168,7 @@ const CheckoutForm = (props) => {
                 ...formInfo,
                 payment: {
                     ...formInfo.payment,
+                    gateway: value,
                     card: {
                         ...formInfo.payment.card, 
                         [name]: value
@@ -186,23 +188,41 @@ const CheckoutForm = (props) => {
         }
     }
 
+    const handlePaymentGateway = (e, {value}) => {
+
+        console.log(value, 'value from radio selection')
+        setPayGate(value)
+
+        setFormInfo({
+            ...formInfo,
+            payment: {
+                ...formInfo.payment,
+                gateway: value
+            }
+        })
+    }
+
+    const checkEmpty = () => {
+
+    }
+
     const handleSubmit = e => {
-        e.preventDefault()
+        // e.preventDefault()
         console.log(formInfo, 'info that is being submitted to capture!')
 
-        if (props.shipOption) {
-            console.log('ready to process')
-            commerce.checkout.capture(props.tokenId, formInfo)
-                .then(res => {
-                    console.log(res, 'res from CAPTURING CHECKOUT!!!')
-                    props.setReceipt(res)
-                    localStorage.removeItem('cart-id')
-                    history.push(`/order-complete/${props.tokenId}/${res.id}`)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-        }
+        // if (props.shipOption) {
+        //     console.log('ready to process')
+        //     commerce.checkout.capture(props.tokenId, formInfo)
+        //         .then(res => {
+        //             console.log(res, 'res from CAPTURING CHECKOUT!!!')
+        //             props.setReceipt(res)
+        //             localStorage.removeItem('cart-id')
+        //             history.push(`/order-complete/${props.tokenId}/${res.id}`)
+        //         })
+        //         .catch(err => {
+        //             console.log(err)
+        //         })
+        // }
         
 
     }
@@ -216,7 +236,7 @@ const CheckoutForm = (props) => {
             <h1>Customer Info</h1>
             <Form.Group widths='equal'>
                 <Form.Input 
-                    required 
+                    // required 
                     fluid 
                     id='customer' 
                     name='firstname' 
@@ -225,7 +245,7 @@ const CheckoutForm = (props) => {
                     onChange={handleChanges} 
                 />
                 <Form.Input 
-                    required 
+                    // required 
                     fluid 
                     id='customer' 
                     name='lastname' 
@@ -234,7 +254,7 @@ const CheckoutForm = (props) => {
                     onChange={handleChanges} 
                 />
                 <Form.Input 
-                    required 
+                    // required 
                     fluid 
                     id='customer' 
                     name='email' 
@@ -245,7 +265,8 @@ const CheckoutForm = (props) => {
             </Form.Group>
             <Form.Group>
                 <Form.Input 
-                    required width={10} 
+                    // required 
+                    width={10} 
                     id='shipping' 
                     name='street' 
                     label='Address' 
@@ -253,7 +274,7 @@ const CheckoutForm = (props) => {
                     onChange={handleChanges}
                 />
                 <Form.Select
-                    required 
+                    // required 
                     width={6} 
                     id='shipping' 
                     name='country' 
@@ -265,7 +286,7 @@ const CheckoutForm = (props) => {
             </Form.Group>
             <Form.Group>
                 <Form.Input 
-                    required 
+                    // required 
                     width={6} 
                     id='shipping' 
                     name='town_city' 
@@ -274,7 +295,7 @@ const CheckoutForm = (props) => {
                     onChange={handleChanges}
                 />
                 <Form.Select
-                    required 
+                    // required 
                     width={6} 
                     label='County/State/Province/Territory' 
                     placeholder='Search ...'
@@ -288,7 +309,8 @@ const CheckoutForm = (props) => {
                 />
                 <Form.Input
                     type='number' 
-                    required width={4} 
+                    // required 
+                    width={4} 
                     id='shipping' 
                     name='postal_zip_code' 
                     label='Zip/Postal' 
@@ -299,9 +321,28 @@ const CheckoutForm = (props) => {
             </Form.Group>
             <h1>Payment Info</h1>
             <Form.Group>
+                <Form.Radio 
+                    label='Test Gateway'
+                    value='test_gateway'
+                    // name='gateway'
+                    // id='payment'
+                    onChange={handlePaymentGateway}
+                    checked={payGate === 'test_gateway'}
+                />
+                <Form.Radio 
+                    label='Credit Card'
+                    value='stripe'
+                    // name='gateway'
+                    // id='payment'
+                    onChange={handlePaymentGateway}
+                    checked={payGate === 'stripe'}
+                />
+            </Form.Group>
+            <Form.Group>
                 <Form.Input
                     type='number' 
-                    required id='payment' 
+                    // required 
+                    id='payment' 
                     name='number' 
                     label='Credit Card Number' 
                     placeholder='0000111100001111' 
@@ -310,7 +351,8 @@ const CheckoutForm = (props) => {
                 <Form.Input
                     type='number'
                     maxLength="5" 
-                    required id='payment' 
+                    // required 
+                    id='payment' 
                     name='postal_zip_code' 
                     label='Billing Zip' 
                     placeholder='Enter Billing Zip Code' 
@@ -319,17 +361,18 @@ const CheckoutForm = (props) => {
             </Form.Group>
             <Form.Group>
                 <Form.Select 
-                    required 
+                    // required 
                     id='payment' 
                     width={3} 
                     name='expiry_month' 
-                    fluid options={monthOptions} 
+                    fluid 
+                    options={monthOptions} 
                     label='Month' 
                     placeholder='02' 
                     onChange={handleChanges}
                 />
                 <Form.Select 
-                    required 
+                    // required 
                     id='payment' 
                     width={3} 
                     name='expiry_year' 
@@ -340,16 +383,18 @@ const CheckoutForm = (props) => {
                     onChange={handleChanges}
                 />
                 <Form.Input 
-                    required id='payment' 
-                    width={3} name='cvc' 
-                    fluid label='CVV' 
+                    // required 
+                    id='payment' 
+                    width={3} 
+                    name='cvc' 
+                    fluid label='CVC' 
                     placeholder='123' 
-                    type='password' 
+                    // type='password' 
                     maxLength="3" 
                     onChange={handleChanges}
                 />
             </Form.Group>
-            <h1>Billing Address</h1>
+            {/* <h1>Billing Address</h1>
             <Form.Checkbox label='Billing Address Same as Shipping ...' onChange={handleCheckBox} />
             {!sameBilling && (
                 <>
@@ -376,7 +421,8 @@ const CheckoutForm = (props) => {
                     </Form.Group>
                     <Form.Group>
                         <Form.Input 
-                            required width={5} 
+                            required 
+                            width={5} 
                             id='billing' 
                             name='street' 
                             label='Address' 
@@ -407,7 +453,8 @@ const CheckoutForm = (props) => {
                         />
                         <Form.Input 
                             type='number' 
-                            required width={2} 
+                            required 
+                            width={2} 
                             id='billing' 
                             name='postal_zip_code' 
                             label='Zip' 
@@ -417,7 +464,7 @@ const CheckoutForm = (props) => {
                         />
                     </Form.Group>
                 </>
-            )}
+            )} */}
             <Form.Button color='green' size='huge'>
                 Complete Checkout and Pay
             </Form.Button>
