@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import { Form } from 'semantic-ui-react';
 import Commerce from '@chec/commerce.js'
+import { useForm, Controller } from 'react-hook-form'
 
 // Import Selections
 import { monthOptions, yearOptions} from '../utils/cardOptions'
@@ -14,11 +15,14 @@ const CheckoutForm = (props) => {
     // console.log(props, 'inside checkout form!!')
 
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
+    const { register, handleSubmit, watch, errors, control } = useForm()
 
     let history = useHistory()
 
     const [sameBilling, setSameBilling] = useState(false)
     const [payGate, setPayGate] = useState()
+    const [isEmpty, setIsEmpty] = useState(false)
+    // const [final, setFinal] = useState({})
     const [formInfo, setFormInfo] = useState({
         customer: {
             firstname: '',
@@ -202,13 +206,20 @@ const CheckoutForm = (props) => {
         })
     }
 
-    const checkEmpty = () => {
-
-    }
-
-    const handleSubmit = e => {
+    const onSubmit = (data) => {
         // e.preventDefault()
         console.log(formInfo, 'info that is being submitted to capture!')
+        console.log(data, 'data from form')
+        // console.log(e.target, 'id')
+        let final = {}
+
+        final.customer = {
+            firstname: data.firstname,
+            lastname: data.lastname,
+            email: data.email
+        }
+
+        console.log(final, 'object after adding properties')
 
         // if (props.shipOption) {
         //     console.log('ready to process')
@@ -224,7 +235,6 @@ const CheckoutForm = (props) => {
         //         })
         // }
         
-
     }
 
     const handleCheckBox = e => {  
@@ -232,35 +242,59 @@ const CheckoutForm = (props) => {
     }
 
     return (
-        <Form className='checkout-form' onSubmit={handleSubmit} loading={false}>
+        <Form className='checkout-form' onSubmit={handleSubmit(onSubmit)} loading={false}>
             <h1>Customer Info</h1>
             <Form.Group widths='equal'>
-                <Form.Input 
+                <Controller
+                    id='customer' 
+                    as={Form.Input} 
+                    name="firstname" 
+                    control={control}
+                    fluid
+                    label='First Name'
+                    placeholder='John'
+                    rules={{ required: "Please enter Firstname" }}
+                    error={errors.firstname && errors.firstname.message} 
+                />
+                {/* <Form.Input 
                     // required 
                     fluid 
                     id='customer' 
                     name='firstname' 
                     label='First name' 
                     placeholder='John' 
-                    onChange={handleChanges} 
-                />
-                <Form.Input 
+                    // onChange={handleChanges}
+                    control='input'
+                    ref={register}  
+                /> */}
+                <Controller 
                     // required 
                     fluid 
-                    id='customer' 
+                    as={Form.Input}
+                    control={control}
+                    // id='customer' 
                     name='lastname' 
                     label='Last name' 
-                    placeholder='Smith' 
-                    onChange={handleChanges} 
+                    placeholder='Smith'
+                    rules={{ required: "Please enter Lastname" }}
+                    error={errors.lastname && errors.lastname.message}  
+                    // onChange={handleChanges}
+                    // ref={register} 
                 />
-                <Form.Input 
+                <Controller 
                     // required 
                     fluid 
-                    id='customer' 
+                    as={Form.Input}
+                    control={control}
+                    // id='customer' 
                     name='email' 
                     label='Email' 
-                    placeholder='xyz@example.com' 
-                    onChange={handleChanges} type='email' 
+                    placeholder='xyz@example.com'
+                    rules={{ required: "Please enter email" }}
+                    error={errors.email && errors.email.message}  
+                    // onChange={handleChanges} 
+                    // type='email'
+                    // ref={register} 
                 />
             </Form.Group>
             <Form.Group>
@@ -272,6 +306,8 @@ const CheckoutForm = (props) => {
                     label='Address' 
                     placeholder='122 Example St' 
                     onChange={handleChanges}
+                    // error={checkEmpty('shipping', 'country')}
+                    // error={{content: 'This is a test'}}
                 />
                 <Form.Select
                     // required 
@@ -279,9 +315,10 @@ const CheckoutForm = (props) => {
                     id='shipping' 
                     name='country' 
                     label='Select Country' 
-                    placeholder='United States' 
+                    // placeholder='United States' 
                     onChange={handleChanges}
                     options={countries}
+                    // error={checkEmpty('shipping', 'country')}
                 />
             </Form.Group>
             <Form.Group>
