@@ -22,6 +22,8 @@ const CheckoutContainer = (props) => {
     const [shippingPrice, setShippingPrice] = useState()
     const [shipOption, setShipOption] = useState()
     const [discountCode, setDiscountCode] = useState()
+    const [noDiscountCode, setNoDiscountCode] = useState()
+    const [invalidDiscountCode, setInvalidDiscountCode] = useState()
 
 
     useEffect(() => {
@@ -87,17 +89,31 @@ const CheckoutContainer = (props) => {
         setDiscountCode(value)
     }
     
-    const handleDiscountClick = (e, {value}) => {
+    const handleDiscountClick = (e) => {
         e.preventDefault()
         console.log(discountCode, 'Discount Code')
 
-        commerce.checkout.checkDiscount(tokenId, {code: discountCode})
-            .then(res => {  
-                console.log(res, 'res from checking discount code')
-                setLiveObject(res.live)
-            })
-            .catch(err => console.log(err))
+        if (!discountCode) {
+            setNoDiscountCode(true)
+            setInvalidDiscountCode(false)
+        } else {
+            commerce.checkout.checkDiscount(tokenId, {code: discountCode})
+                .then(res => {  
+                    console.log(res, 'res from checking discount code')
 
+                    if (!res.valid) {
+                        setInvalidDiscountCode(true)
+                    } else {
+                        setInvalidDiscountCode(false)
+                        setLiveObject(res.live)
+                        setDiscountCode(null)
+                    }
+                    
+                    setNoDiscountCode(false)
+                    
+                })
+                .catch(err => console.log(err))
+        }
     }
 
     return (
@@ -134,16 +150,32 @@ const CheckoutContainer = (props) => {
                         />
                         {!shipOption && <p>Select Country for Shipping Options</p>} 
                         <Divider horizontal>Discount Code</Divider>
-                        <form className='discount-code'>
+                        <form className='discount-code' onSubmit={handleDiscountClick}>
                             <Input onChange={handleDiscountCode} />
-                            <Button color='black' onClick={handleDiscountClick}>Apply</Button>     
+                            <Button color='black'>Apply</Button>     
                         </form>
+                        {noDiscountCode && <p>No Discount Code Entered</p>}
+                        {invalidDiscountCode && <p>Invalid Code!</p>}
                         <Divider horizontal>Cart Totals</Divider>
                         
                         {liveObject && (
                             <>
-                                {shipOption && <Header color='olive' textAlign='center'>(Shipping) +{liveObject.shipping.price.formatted}</Header>}
-                                {liveObject.discount.length !== 0 && <Header color='olive' textAlign='center'>(Discount Code) -{liveObject.discount.amount_saved.formatted}</Header>}
+                                {shipOption && (
+                                    <Header 
+                                        color='olive' 
+                                        textAlign='center'
+                                    >
+                                        (Shipping) +{liveObject.shipping.price.formatted}
+                                    </Header>
+                                )}
+                                {liveObject.discount.length !== 0 && (
+                                    <Header 
+                                        color='olive' 
+                                        textAlign='center'
+                                    >
+                                        (LUCKY) - {liveObject.discount.amount_saved.formatted}
+                                    </Header>
+                                )}
                                 <Header textAlign='center' size='large'>{liveObject.total.formatted_with_symbol}</Header>
                             </>
                         )}
