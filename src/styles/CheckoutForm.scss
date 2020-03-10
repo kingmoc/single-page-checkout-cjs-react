@@ -2,3 +2,20 @@
 //     width: 70%;
 //     margin: 0 auto;
 // }
+
+.payment-radio {
+    align-items: center;
+    margin-left: 0px !important;
+
+    label {
+        margin-right: 10px;
+    }
+}
+
+.payment-type-error {
+    color: red;
+    margin-top: 0px !important;
+    margin-bottom: 20px !important;
+    border: 1px solid #e0b4b4!important;
+    color: #9f3a38!important;
+}

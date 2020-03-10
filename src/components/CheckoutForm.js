@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import { Form } from 'semantic-ui-react';
+import { Form, Input, Radio, Checkbox, Header, Label } from 'semantic-ui-react';
 import Commerce from '@chec/commerce.js'
 import { useForm, Controller } from 'react-hook-form'
 
@@ -15,39 +15,15 @@ const CheckoutForm = (props) => {
     // console.log(props, 'inside checkout form!!')
 
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
-    const { register, handleSubmit, watch, errors, control } = useForm()
+    const { register, handleSubmit, errors, control, reset } = useForm()
 
     let history = useHistory()
 
     const [sameBilling, setSameBilling] = useState(false)
-    const [payGate, setPayGate] = useState()
-    const [isEmpty, setIsEmpty] = useState(false)
-    // const [final, setFinal] = useState({})
-    const [formInfo, setFormInfo] = useState({
-        customer: {
-            firstname: '',
-            lastname: '',
-            email: ''
-        },
-        shipping: {
-            name: '',
-            street: '',
-            town_city: '',
-            county_state: '',
-            postal_zip_code: '',
-            country: '',
-        },
-        payment: {
-            gateway: '',
-            card: {
-                number: '',
-                expiry_month: '',
-                expiry_year: '',
-                cvc: '',
-                postal_zip_code: ''
-            }
-        }
-    })
+    const [lineItems, setLineItems] = useState()
+    const [shipCountry, setShipCountry] = useState()
+    const [billingShipCountry, setBillingShipCountry] = useState()
+
 
     useEffect(() => {
         let lineItems = {}
@@ -65,152 +41,50 @@ const CheckoutForm = (props) => {
             }
         })
 
-        setFormInfo({
-            ...formInfo,
-            line_items: lineItems,
-            fulfillment: {
-                shipping_method: props.shipOption
-            }
-        })
-    }, [props.shipOption])
+        setLineItems(lineItems)
+
+    }, [])
 
     useEffect(() => {
-
-        if(sameBilling) {
-            console.log('getting inside sameBilling!!!')
-            setFormInfo({
-                ...formInfo,
-                billing: {
-                    ...formInfo.shipping
-                }
-            })
-        }
-    }, [sameBilling])
-
-    useEffect(() => {
-        props.getShippingOptions(formInfo.shipping.country)
-    }, [formInfo])
+        props.getShippingOptions(shipCountry)
+    }, [shipCountry])
 
     const getCountryInfoShipping = () => {
         
-        if (formInfo.shipping.country === 'MX') {
+        if (shipCountry === 'MX') {
             return mexico
         }
 
-        if (formInfo.shipping.country === 'CA') {
+        if (shipCountry === 'CA') {
             return canada
         }
 
-        if (formInfo.shipping.country === 'US') {
+        if (shipCountry === 'US') {
             return stateOptions
         }
     }
     
     const getCountryInfoBilling = () => {
         
-        if (formInfo.billing && formInfo.billing.country === 'MX') {
+        if (billingShipCountry === 'MX') {
             return mexico
         }
 
-        if (formInfo.billing && formInfo.billing.country === 'CA') {
+        if (billingShipCountry === 'CA') {
             return canada
         }
 
-        if (formInfo.billing && formInfo.billing.country === 'US') {
+        if (billingShipCountry === 'US') {
             return stateOptions
         }
     }
-    
-    const handleChanges = (e, { name, value, id }) => {
-        
-        if (id === 'customer') {
-            
-            setFormInfo({
-                ...formInfo, 
-                customer: {
-                    ...formInfo.customer,
-                    [name]: value
-                },
-                shipping: {
-                    ...formInfo.shipping,
-                    name: formInfo.customer.firstname + ' ' + formInfo.customer.lastname
-                }
-            })
-        }
 
-        if (id === 'shipping') {
-            setFormInfo({
-                ...formInfo,
-                shipping: {
-                    ...formInfo.shipping,
-                    [name]: value,
-                    name: `${formInfo.customer.firstname} ${formInfo.customer.lastname}`
-                },
-            })
-
-            props.setShipOption(false)
-        }
-
-        if (id === 'shipping' && sameBilling) {
-            setFormInfo({
-                ...formInfo,
-                shipping: {
-                    ...formInfo.shipping,
-                    [name]: value,
-                    name: `${formInfo.customer.firstname} ${formInfo.customer.lastname}`
-                },
-                billing: {
-                    ...formInfo.shipping,
-                    [name]: value,
-                    name: `${formInfo.customer.firstname} ${formInfo.customer.lastname}`
-                }
-            })
-        }
-
-        if (id === 'payment') {
-            setFormInfo({
-                ...formInfo,
-                payment: {
-                    ...formInfo.payment,
-                    gateway: value,
-                    card: {
-                        ...formInfo.payment.card, 
-                        [name]: value
-                    }
-                }
-            })
-        }
-
-        if (id === 'billing' && !sameBilling) {
-            setFormInfo({
-                ...formInfo,
-                billing: {
-                    ...formInfo.billing,
-                    [name]: value,
-                }
-            })
-        }
-    }
-
-    const handlePaymentGateway = (e, {value}) => {
-
-        console.log(value, 'value from radio selection')
-        setPayGate(value)
-
-        setFormInfo({
-            ...formInfo,
-            payment: {
-                ...formInfo.payment,
-                gateway: value
-            }
-        })
+    const handleCheckBox = e => {  
+        setSameBilling(!sameBilling)
     }
 
     const onSubmit = (data) => {
-        // e.preventDefault()
-        console.log(formInfo, 'info that is being submitted to capture!')
         console.log(data, 'data from form')
-        // console.log(e.target, 'id')
         let final = {}
 
         final.customer = {
@@ -219,28 +93,60 @@ const CheckoutForm = (props) => {
             email: data.email
         }
 
-        console.log(final, 'object after adding properties')
+        final.shipping = {
+            name: `${data.firstname} ${data.lastname}`,
+            street: data.street,
+            town_city: data.town_city,
+            county_state: data.county_state,
+            postal_zip_code: data.postal_zip_code,
+            country: data.country
+        }
 
-        // if (props.shipOption) {
-        //     console.log('ready to process')
-        //     commerce.checkout.capture(props.tokenId, formInfo)
-        //         .then(res => {
-        //             console.log(res, 'res from CAPTURING CHECKOUT!!!')
-        //             props.setReceipt(res)
-        //             localStorage.removeItem('cart-id')
-        //             history.push(`/order-complete/${props.tokenId}/${res.id}`)
-        //         })
-        //         .catch(err => {
-        //             console.log(err)
-        //         })
-        // }
+        if (sameBilling) {
+            final.billing = final.shipping
+        } else {
+            final.billing = {
+                name: data.billing_name,
+                street: data.billing_street,
+                town_city: data.billing_town_city,
+                county_state: data.billing_county_state,
+                postal_zip_code: data.billing_postal_zip_code,
+                country: data.billing_country
+            }
+        }
+
+        final.payment = {
+            gateway: data.gateway,
+            card: {
+                number: data.number,
+                expiry_month: data.expiry_month,
+                expiry_year: data.expiry_year,
+                cvc: data.cvc,
+                postal_zip_code: data.postal_billing_zip_code
+            }
+        }
+
+        final.line_items = lineItems
+
+        final.fulfillment = {
+            shipping_method: props.shipOption
+        }
+
+        if (props.shipOption) {
+            console.log(final, 'ready to process')
+            // commerce.checkout.capture(props.tokenId, formInfo)
+            //     .then(res => {
+                //         console.log(res, 'res from CAPTURING CHECKOUT!!!')
+                //         props.setReceipt(res)
+                //         localStorage.removeItem('cart-id')
+                //         history.push(`/order-complete/${props.tokenId}/${res.id}`)
+            //     })
+            //     .catch(err => {
+                //         console.log(err)
+                //     })
+            }
+        }
         
-    }
-
-    const handleCheckBox = e => {  
-        setSameBilling(!sameBilling)
-    }
-
     return (
         <Form className='checkout-form' onSubmit={handleSubmit(onSubmit)} loading={false}>
             <h1>Customer Info</h1>
@@ -256,252 +162,268 @@ const CheckoutForm = (props) => {
                     rules={{ required: "Please enter Firstname" }}
                     error={errors.firstname && errors.firstname.message} 
                 />
-                {/* <Form.Input 
-                    // required 
-                    fluid 
-                    id='customer' 
-                    name='firstname' 
-                    label='First name' 
-                    placeholder='John' 
-                    // onChange={handleChanges}
-                    control='input'
-                    ref={register}  
-                /> */}
                 <Controller 
-                    // required 
                     fluid 
                     as={Form.Input}
                     control={control}
-                    // id='customer' 
                     name='lastname' 
                     label='Last name' 
                     placeholder='Smith'
                     rules={{ required: "Please enter Lastname" }}
                     error={errors.lastname && errors.lastname.message}  
-                    // onChange={handleChanges}
-                    // ref={register} 
                 />
                 <Controller 
-                    // required 
                     fluid 
-                    as={Form.Input}
-                    control={control}
-                    // id='customer' 
-                    name='email' 
+                    name='email'
+                    type='email' 
                     label='Email' 
                     placeholder='xyz@example.com'
+                    as={Form.Input}
+                    control={control}
                     rules={{ required: "Please enter email" }}
                     error={errors.email && errors.email.message}  
-                    // onChange={handleChanges} 
-                    // type='email'
-                    // ref={register} 
                 />
             </Form.Group>
             <Form.Group>
-                <Form.Input 
-                    // required 
+                <Controller 
                     width={10} 
-                    id='shipping' 
                     name='street' 
                     label='Address' 
-                    placeholder='122 Example St' 
-                    onChange={handleChanges}
-                    // error={checkEmpty('shipping', 'country')}
-                    // error={{content: 'This is a test'}}
+                    placeholder='122 Example St'
+                    as={Form.Input}
+                    control={control}
+                    rules={{ required: "Please enter address" }}
+                    error={errors.street && errors.street.message}   
                 />
-                <Form.Select
-                    // required 
+                <Controller
                     width={6} 
-                    id='shipping' 
                     name='country' 
                     label='Select Country' 
-                    // placeholder='United States' 
-                    onChange={handleChanges}
                     options={countries}
-                    // error={checkEmpty('shipping', 'country')}
+                    as={Form.Select}
+                    control={control}
+                    rules={{ required: "Please select country" }}
+                    error={errors.country && errors.country.message} 
+                    onChange={(e) => {
+                        setShipCountry(e[1].value)
+                        props.setShipOption(false)
+                        reset({
+                            county_state: ''
+                        })
+                        return e[1].value 
+                    }}
                 />
             </Form.Group>
             <Form.Group>
-                <Form.Input 
-                    // required 
+                <Controller 
                     width={6} 
-                    id='shipping' 
                     name='town_city' 
                     label='Town/City' 
                     placeholder='Las Vegas' 
-                    onChange={handleChanges}
+                    as={Form.Input}
+                    control={control}
+                    rules={{ required: "Please enter Town/City" }}
+                    error={errors.town_city && errors.town_city.message} 
                 />
-                <Form.Select
-                    // required 
+                <Controller
                     width={6} 
                     label='County/State/Province/Territory' 
                     placeholder='Search ...'
-                    id='shipping'
                     name='county_state' 
                     search 
-                    selection 
                     fluid
                     options={getCountryInfoShipping()}
-                    onChange={handleChanges}
+                    as={Form.Select}
+                    control={control}
+                    rules={{ required: "Must Select Country First" }}
+                    error={errors.county_state && errors.county_state.message} 
+                    onChange={(e) => e[1].value}
                 />
-                <Form.Input
-                    type='number' 
-                    // required 
+                <Controller
                     width={4} 
-                    id='shipping' 
+                    type='number'
                     name='postal_zip_code' 
                     label='Zip/Postal' 
-                    placeholder='00000' 
-                    maxLength="5"
-                    onChange={handleChanges}
+                    placeholder='00000'
+                    as={Form.Input}
+                    control={control}
+                    max='99999'
+                    rules={{ 
+                        required: "Please enter zip",
+                        // max: 99999
+                    }}
+                    error={errors.postal_zip_code && errors.postal_zip_code.message} 
                 />
             </Form.Group>
             <h1>Payment Info</h1>
-            <Form.Group>
-                <Form.Radio 
-                    label='Test Gateway'
+            <Form.Group className='payment-radio'>
+                <input
+                    name='gateway' 
+                    type='radio'
                     value='test_gateway'
-                    // name='gateway'
-                    // id='payment'
-                    onChange={handlePaymentGateway}
-                    checked={payGate === 'test_gateway'}
+                    ref={register({ required: "Please select Payment Type" })}
                 />
-                <Form.Radio 
-                    label='Credit Card'
+                <label for="test_gateway">Test Gateway</label>
+                <input
+                    name='gateway' 
+                    type='radio'
                     value='stripe'
-                    // name='gateway'
-                    // id='payment'
-                    onChange={handlePaymentGateway}
-                    checked={payGate === 'stripe'}
+                    ref={register({ required: "Please select Payment Type" })}
                 />
+                <label for="stripe">Credit Card</label>
             </Form.Group>
+            {errors.gateway && (
+                <Label 
+                    className='payment-type-error'
+                    basic   
+                    pointing  
+                >
+                    {errors.gateway.message}
+                </Label>
+            )}
             <Form.Group>
-                <Form.Input
+                <Controller
+                    name='number'
                     type='number' 
-                    // required 
-                    id='payment' 
-                    name='number' 
                     label='Credit Card Number' 
                     placeholder='0000111100001111' 
-                    onChange={handleChanges}
+                    as={Form.Input}
+                    control={control}
+                    rules={{ required: "Please enter Card Number" }}
+                    error={errors.number && errors.number.message}
                 />
-                <Form.Input
+                <Controller
+                    name='postal_billing_zip_code' 
                     type='number'
-                    maxLength="5" 
-                    // required 
-                    id='payment' 
-                    name='postal_zip_code' 
+                    max='99999'
                     label='Billing Zip' 
-                    placeholder='Enter Billing Zip Code' 
-                    onChange={handleChanges}
+                    placeholder='Enter Billing Zip Code'
+                    as={Form.Input}
+                    control={control}
+                    rules={{ required: "Please enter Billing zip" }}
+                    error={errors.postal_billing_zip_code && errors.postal_billing_zip_code.message} 
                 />
             </Form.Group>
             <Form.Group>
-                <Form.Select 
-                    // required 
-                    id='payment' 
+                <Controller 
                     width={3} 
                     name='expiry_month' 
                     fluid 
                     options={monthOptions} 
                     label='Month' 
-                    placeholder='02' 
-                    onChange={handleChanges}
+                    as={Form.Select}
+                    control={control}
+                    rules={{ required: "Must Select Expiration Month" }}
+                    error={errors.expiry_month && errors.expiry_month.message} 
+                    onChange={(e) => e[1].value} 
                 />
-                <Form.Select 
-                    // required 
-                    id='payment' 
+                <Controller 
                     width={3} 
                     name='expiry_year' 
                     fluid 
                     options={yearOptions} 
                     label='Year' 
-                    placeholder='23' 
-                    onChange={handleChanges}
+                    as={Form.Select}
+                    control={control}
+                    rules={{ required: "Must Select Expiration Year" }}
+                    error={errors.expiry_year && errors.expiry_year.message} 
+                    onChange={(e) => e[1].value} 
                 />
-                <Form.Input 
-                    // required 
-                    id='payment' 
+                <Controller 
                     width={3} 
-                    name='cvc' 
-                    fluid label='CVC' 
-                    placeholder='123' 
-                    // type='password' 
-                    maxLength="3" 
-                    onChange={handleChanges}
+                    name='cvc'
+                    type='number'
+                    label='CVC' 
+                    placeholder='123'
+                    as={Form.Input}
+                    control={control}
+                    rules={{ required: "Please enter CVC" }}
+                    error={errors.cvc && errors.cvc.message} 
                 />
             </Form.Group>
-            {/* <h1>Billing Address</h1>
+            <h1>Billing Address</h1>
             <Form.Checkbox label='Billing Address Same as Shipping ...' onChange={handleCheckBox} />
             {!sameBilling && (
                 <>
                     <Form.Group widths='equal'>
-                        <Form.Input 
-                            required 
+                        <Controller 
                             width={10} 
-                            id='billing' 
-                            name='name' 
+                            name='billing_name' 
                             label='Billing Name' 
                             placeholder='John Smith' 
-                            onChange={handleChanges}
+                            as={Form.Input}
+                            control={control}
+                            rules={{ required: "Please enter Billing Name" }}
+                            error={errors.billing_name && errors.billing_name.message} 
                         />
-                        <Form.Select
-                            required    
+                        <Controller
                             width={6} 
-                            id='billing' 
-                            name='country' 
+                            name='billing_country' 
                             label='Select Country' 
-                            placeholder='United States' 
-                            onChange={handleChanges}
                             options={countries}
+                            as={Form.Select}
+                            control={control}
+                            rules={{ required: "Please select country" }}
+                            error={errors.billing_country && errors.billing_country.message} 
+                            onChange={(e) => {
+                                setBillingShipCountry(e[1].value)
+                                reset({
+                                    billing_county_state: ''
+                                })
+                                return e[1].value 
+                            }}
                         />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Input 
-                            required 
-                            width={5} 
-                            id='billing' 
-                            name='street' 
+                        <Controller 
+                            width={4} 
+                            name='billing_street' 
                             label='Address' 
                             placeholder='122 Example St' 
-                            onChange={handleChanges}
+                            as={Form.Input}
+                            control={control}
+                            rules={{ required: "Please enter Street Address" }}
+                            error={errors.billing_street && errors.billing_street.message} 
                         />
-                        <Form.Input 
-                            required 
+                        <Controller 
                             width={3} 
-                            id='billing' 
-                            name='town_city' 
+                            name='billing_town_city' 
                             label='City' 
                             placeholder='Las Vegas' 
-                            onChange={handleChanges}
+                            as={Form.Input}
+                            control={control}
+                            rules={{ required: "Please enter City/Town" }}
+                            error={errors.billing_town_city && errors.billing_town_city.message} 
                         />
-                        <Form.Select
-                            required
+                        <Controller
                             width={6} 
                             label='County/State/Province/Territory' 
                             placeholder='Search State'
-                            id='billing'
-                            name='county_state' 
+                            name='billing_county_state' 
                             search 
                             selection 
                             fluid
                             options={getCountryInfoBilling()}
-                            onChange={handleChanges}
+                            as={Form.Select}
+                            control={control}
+                            rules={{ required: "Must Select Country First" }}
+                            error={errors.billing_county_state && errors.billing_county_state.message} 
+                            onChange={(e) => e[1].value}
                         />
-                        <Form.Input 
-                            type='number' 
-                            required 
-                            width={2} 
-                            id='billing' 
-                            name='postal_zip_code' 
+                        <Controller 
+                            width={3} 
+                            type='number'
+                            name='billing_postal_zip_code' 
                             label='Zip' 
                             placeholder='00000' 
-                            maxLength="5" 
-                            onChange={handleChanges}
+                            as={Form.Input}
+                            control={control}
+                            rules={{ required: "Please enter Billing Zipcode" }}
+                            error={errors.billing_postal_zip_code && errors.billing_postal_zip_code.message} 
                         />
                     </Form.Group>
                 </>
-            )} */}
+            )}
             <Form.Button color='green' size='huge'>
                 Complete Checkout and Pay
             </Form.Button>

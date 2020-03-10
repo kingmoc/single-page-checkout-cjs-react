@@ -132,7 +132,7 @@ const CheckoutContainer = (props) => {
                             onChange={handleDropDownShipping}
                             options={shippingOptions}
                         />
-                        {!shipOption && <p>Please select shipping Method</p>} 
+                        {!shipOption && <p>Select Country for Shipping Options</p>} 
                         <Divider horizontal>Discount Code</Divider>
                         <form className='discount-code'>
                             <Input onChange={handleDiscountCode} />
