@@ -3,6 +3,8 @@ import { useHistory } from "react-router-dom";
 import { Form, Input, Radio, Checkbox, Header, Label } from 'semantic-ui-react';
 import Commerce from '@chec/commerce.js'
 import { useForm, Controller } from 'react-hook-form'
+import { axiosWithAuth } from '../utils/axiosWithAuth'
+import qs from 'qs'
 
 // Import Selections
 import { monthOptions, yearOptions} from '../utils/cardOptions'
@@ -118,11 +120,12 @@ const CheckoutForm = (props) => {
         final.payment = {
             gateway: data.gateway,
             card: {
-                number: data.number,
-                expiry_month: data.expiry_month,
-                expiry_year: data.expiry_year,
-                cvc: data.cvc,
-                postal_zip_code: data.postal_billing_zip_code
+                // number: data.number,
+                // expiry_month: data.expiry_month,
+                // expiry_year: data.expiry_year,
+                // cvc: data.cvc,
+                // postal_zip_code: data.postal_billing_zip_code,
+                token: 'tok_1GLeonL2SfeRK8EnK0pQHB0u'
             }
         }
 
@@ -132,18 +135,32 @@ const CheckoutForm = (props) => {
             shipping_method: props.shipOption
         }
 
+        let stripeTest = {
+            number: data.number,
+            exp_month: data.expiry_month,
+            exp_year: data.expiry_year,
+            cvc: data.cvc,
+            address_zip: data.postal_billing_zip_code
+        }
+
+        // axiosWithAuth().post('/tokens', qs.stringify({card: stripeTest}))
+        //     .then(res => {
+        //         console.log(res, 'res from token call')
+        //     })
+        //     .catch(err => console.log(err.response))
+
         if (props.shipOption) {
             console.log(final, 'ready to process')
-            // commerce.checkout.capture(props.tokenId, formInfo)
-            //     .then(res => {
-                //         console.log(res, 'res from CAPTURING CHECKOUT!!!')
-                //         props.setReceipt(res)
-                //         localStorage.removeItem('cart-id')
-                //         history.push(`/order-complete/${props.tokenId}/${res.id}`)
-            //     })
-            //     .catch(err => {
-                //         console.log(err)
-                //     })
+            commerce.checkout.capture(props.tokenId, final)
+                .then(res => {
+                        console.log(res, 'res from CAPTURING CHECKOUT!!!')
+                        props.setReceipt(res)
+                        localStorage.removeItem('cart-id')
+                        history.push(`/order-complete/${props.tokenId}/${res.id}`)
+                })
+                .catch(err => {
+                        console.log(err)
+                    })
             }
         }
         

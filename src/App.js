@@ -114,16 +114,6 @@ function App() {
                 </Grid.Column>
             </Grid>
             {/* Route to Checkout */}
-            {/* <PrivateRoute path="/checkout/:id" render={props => {
-                return (
-                    <CheckoutContainer 
-                        {...props}
-                        setCheckout={setCheckout}
-                        setModalOpen={setModalOpen}
-                        setReceipt={setReceipt}
-                    />
-                )
-            }}/> */}
             <PrivateRoute 
                 path={`/checkout/:id`} 
                 setCheckout={setCheckout}
@@ -135,7 +125,7 @@ function App() {
                 return (
                     <CheckoutComplete 
                         {...props}
-                        // receipt={receipt}
+                        setCheckout={setCheckout}
                     />
                 )
             }}/>
