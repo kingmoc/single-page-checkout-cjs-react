@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Commerce from '@chec/commerce.js'
-import { Image, Grid, Header, Divider } from 'semantic-ui-react';
-import hero from '../img/hero.jpg'
+import { Grid, Divider } from 'semantic-ui-react';
 import ProductCard from '../components/ProductCard'
 
 const ProductContainer = (props) => {

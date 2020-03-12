@@ -14,9 +14,8 @@ const CheckoutComplete = (props) => {
 
     useEffect(() => {
         props.setCheckout(true)
-    })
-
-    
+    }, [])
+        
     // let {checkoutToken, orderId} = useParams()
     // console.log(checkoutToken, orderId, 'from useParams HOOK!!')
 

@@ -7,7 +7,7 @@ import CartItems from './CartItems'
 
 const CartModal = (props) => {
 
-    console.log(props.cart, 'cart info inside CartModal!!')
+    // console.log(props.cart, 'cart info inside CartModal!!')
 
     let history = useHistory()
     // console.log(history, 'route props')

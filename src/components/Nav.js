@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Menu, Image, Icon, Segment, Input, Modal, Label } from 'semantic-ui-react'
 import logo from '../img/logo.png'
 
@@ -6,10 +6,6 @@ import CartModal from './CartModal'
 import { Link } from 'react-router-dom';
 
 const Nav = (props) => {
-
-    // const [modalOpen, setModalOpen] = useState(false)
-
-    // props.modalOpen 
 
     const iconDisplay = () => {
 

@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Grid, Item, Header, Container, Segment, Divider, Dropdown, Input, Button, Select } from 'semantic-ui-react';
+import { Grid, Header, Container, Segment, Divider, Dropdown, Input, Button } from 'semantic-ui-react';
 import Commerce from '@chec/commerce.js'
-
-// Import Selections
-import { monthOptions, yearOptions} from '../utils/cardOptions'
-import { stateOptions } from '../utils/stateOptions'
 
 // Component Imports
 import CheckoutForm from './CheckoutForm'
@@ -12,14 +8,13 @@ import CheckoutItems from './CheckoutItems'
 import { Link } from 'react-router-dom';
 
 const CheckoutContainer = (props) => {
-    console.log(props, 'Checking prop being sent from Private Route!!!!!!')
+    // console.log(props, 'Checking prop being sent from Private Route!!!!!!')
 
     const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
 
     const [liveObject, setLiveObject] = useState()
     const [tokenId, setTokenId] = useState()
     const [shippingOptions, setShippingOptions] = useState()
-    const [shippingPrice, setShippingPrice] = useState()
     const [shipOption, setShipOption] = useState()
     const [discountCode, setDiscountCode] = useState()
     const [noDiscountCode, setNoDiscountCode] = useState()
@@ -30,7 +25,7 @@ const CheckoutContainer = (props) => {
         let cartId = props.match.params.id
         commerce.checkout.generateToken(cartId, { type: 'cart' })
             .then(res => {
-                console.log(res, 'response from generating checkout Token')
+                // console.log(res, 'response from generating checkout Token')
                 setLiveObject(res.live)
                 setTokenId(res.id)
             })
@@ -43,7 +38,7 @@ const CheckoutContainer = (props) => {
 
     const getShippingOptions = (countrySymbol) => {
 
-        console.log(countrySymbol, 'country from form selection')
+        // console.log(countrySymbol, 'country from form selection')
 
         if (countrySymbol) {
             commerce.checkout.getShippingOptions(tokenId, {
@@ -77,7 +72,7 @@ const CheckoutContainer = (props) => {
             country: options[0].key
         })
             .then(res => {  
-                console.log(res, 'res from checking discount code')
+                // console.log(res, 'res from checking discount code')
                 setShipOption(value)
                 setLiveObject(res.live) 
             })
@@ -91,7 +86,7 @@ const CheckoutContainer = (props) => {
     
     const handleDiscountClick = (e) => {
         e.preventDefault()
-        console.log(discountCode, 'Discount Code')
+        // console.log(discountCode, 'Discount Code')
 
         if (!discountCode) {
             setNoDiscountCode(true)
@@ -99,7 +94,7 @@ const CheckoutContainer = (props) => {
         } else {
             commerce.checkout.checkDiscount(tokenId, {code: discountCode})
                 .then(res => {  
-                    console.log(res, 'res from checking discount code')
+                    // console.log(res, 'res from checking discount code')
 
                     if (!res.valid) {
                         setInvalidDiscountCode(true)
@@ -141,7 +136,7 @@ const CheckoutContainer = (props) => {
                             </Container>
                         ))}
                         <Divider horizontal>Shipping Options</Divider>
-                        <Select
+                        <Dropdown
                             placeholder='Select Shipping Method'
                             fluid
                             selection

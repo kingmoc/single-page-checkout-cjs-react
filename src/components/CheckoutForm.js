@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import { Form, Input, Radio, Checkbox, Header, Label } from 'semantic-ui-react';
+import { Form, Label } from 'semantic-ui-react';
 import Commerce from '@chec/commerce.js'
 import { useForm, Controller } from 'react-hook-form'
 import { axiosWithAuth } from '../utils/axiosWithAuth'
@@ -22,6 +22,7 @@ const CheckoutForm = (props) => {
     let history = useHistory()
 
     const [sameBilling, setSameBilling] = useState(false)
+    const [processing, setProcessing] = useState(false)
     const [lineItems, setLineItems] = useState()
     const [shipCountry, setShipCountry] = useState()
     const [billingShipCountry, setBillingShipCountry] = useState()
@@ -86,8 +87,15 @@ const CheckoutForm = (props) => {
     }
 
     const onSubmit = (data) => {
-        console.log(data, 'data from form')
+        // console.log(data, 'data from form')
+        setProcessing(true)
         let final = {}
+
+        final.line_items = lineItems
+
+        final.fulfillment = {
+            shipping_method: props.shipOption
+        }
 
         final.customer = {
             firstname: data.firstname,
@@ -117,55 +125,78 @@ const CheckoutForm = (props) => {
             }
         }
 
-        final.payment = {
-            gateway: data.gateway,
-            card: {
-                // number: data.number,
-                // expiry_month: data.expiry_month,
-                // expiry_year: data.expiry_year,
-                // cvc: data.cvc,
-                // postal_zip_code: data.postal_billing_zip_code,
-                token: 'tok_1GLeonL2SfeRK8EnK0pQHB0u'
+        if (data.gateway === 'stripe') {
+
+            let stripInfo = {
+                name: `${data.firstname} ${data.lastname}`,
+                number: data.number,
+                exp_month: data.expiry_month,
+                exp_year: data.expiry_year,
+                cvc: data.cvc,
+                address_zip: data.postal_billing_zip_code
             }
-        }
 
-        final.line_items = lineItems
-
-        final.fulfillment = {
-            shipping_method: props.shipOption
-        }
-
-        let stripeTest = {
-            number: data.number,
-            exp_month: data.expiry_month,
-            exp_year: data.expiry_year,
-            cvc: data.cvc,
-            address_zip: data.postal_billing_zip_code
-        }
-
-        // axiosWithAuth().post('/tokens', qs.stringify({card: stripeTest}))
-        //     .then(res => {
-        //         console.log(res, 'res from token call')
-        //     })
-        //     .catch(err => console.log(err.response))
-
-        if (props.shipOption) {
-            console.log(final, 'ready to process')
-            commerce.checkout.capture(props.tokenId, final)
+            axiosWithAuth().post('/tokens', qs.stringify({card: stripInfo}))
                 .then(res => {
-                        console.log(res, 'res from CAPTURING CHECKOUT!!!')
-                        props.setReceipt(res)
-                        localStorage.removeItem('cart-id')
-                        history.push(`/order-complete/${props.tokenId}/${res.id}`)
+                    // console.log(res, 'res from token call')
+                    final.payment = {
+                        gateway: data.gateway,
+                        card: {
+                            token: res.data.id
+                        }
+                    }
+
+                    if (props.shipOption) {
+                        // console.log(final, 'ready to process INSIDE STRIPE')
+                        commerce.checkout.capture(props.tokenId, final)
+                            .then(res => {
+                                    // console.log(res, 'res from CAPTURING CHECKOUT!!!')
+                                    props.setReceipt(res)
+                                    localStorage.removeItem('cart-id')
+                                    history.push(`/order-complete/${props.tokenId}/${res.id}`)
+                                    setProcessing(false)
+                            })
+                            .catch(err => {
+                                    window.alert(err.data.error.message)
+                                    setProcessing(false)
+                            })
+                    }
                 })
                 .catch(err => {
-                        console.log(err)
+                    console.log(err.data, 'error message')
+                })
+        } else {
+            final.payment = {
+                gateway: data.gateway,
+                card: {
+                    number: data.number,
+                    expiry_month: data.expiry_month,
+                    expiry_year: data.expiry_year,
+                    cvc: data.cvc,
+                    postal_zip_code: data.postal_billing_zip_code,
+                }
+            }
+
+            if (props.shipOption) {
+                // console.log(final, 'ready to process - TEST GATEWAY')
+                commerce.checkout.capture(props.tokenId, final)
+                    .then(res => {
+                            // console.log(res, 'res from CAPTURING CHECKOUT!!!')
+                            props.setReceipt(res)
+                            localStorage.removeItem('cart-id')
+                            history.push(`/order-complete/${props.tokenId}/${res.id}`)
+                            setProcessing(false)
+                    })
+                    .catch(err => {
+                            window.alert(err.data.error.message)
+                            setProcessing(false)
                     })
             }
         }
+    }
         
     return (
-        <Form className='checkout-form' onSubmit={handleSubmit(onSubmit)} loading={false}>
+        <Form className='checkout-form' onSubmit={handleSubmit(onSubmit)} loading={processing}>
             <h1>Customer Info</h1>
             <Form.Group widths='equal'>
                 <Controller
@@ -280,14 +311,14 @@ const CheckoutForm = (props) => {
                     value='test_gateway'
                     ref={register({ required: "Please select Payment Type" })}
                 />
-                <label for="test_gateway">Test Gateway</label>
+                <label htmlFor="test_gateway">Test Gateway</label>
                 <input
                     name='gateway' 
                     type='radio'
                     value='stripe'
                     ref={register({ required: "Please select Payment Type" })}
                 />
-                <label for="stripe">Credit Card</label>
+                <label htmlFor="stripe">Credit Card</label>
             </Form.Group>
             {errors.gateway && (
                 <Label 

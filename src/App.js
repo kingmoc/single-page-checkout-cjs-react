@@ -26,7 +26,7 @@ function App() {
     useEffect(() => {
         commerce.cart.retrieve()
             .then(res => {
-                console.log(res, 'response from app useEffect')
+                // console.log(res, 'response from app useEffect')
                 setCart(res)
             })
     },[receipt])
@@ -37,6 +37,7 @@ function App() {
             commerce.cart.remove(lineItemId)
                 .then(res => {
                     setCart(res.cart)
+                    localStorage.removeItem('cart-id')
                 })
         },
         addQaunity: (lineItemId, newQuanity) => {
@@ -65,7 +66,7 @@ function App() {
         if(variantInfo) {
             commerce.cart.add(productId, 1, variantInfo)
                 .then(res => {
-                    console.log(res, 'res from adding to CART!!')
+                    // console.log(res, 'res from adding to CART!!')
                     setCart(res.cart)
                 })
         } else {
@@ -74,11 +75,11 @@ function App() {
     }
 
     const emptyCart = () => {
-        console.log('works')
         commerce.cart.empty()
             .then(res => {
-                console.log(res, 'res from empty cart')
+                // console.log(res, 'res from empty cart')
                 setCart(null)
+                localStorage.removeItem('cart-id')
             })
     }
 
@@ -115,12 +116,17 @@ function App() {
             </Grid>
             {/* Route to Checkout */}
             <PrivateRoute 
+                component={CheckoutContainer}
                 path={`/checkout/:id`} 
                 setCheckout={setCheckout}
                 setModalOpen={setModalOpen}
                 setReceipt={setReceipt}
-                component={CheckoutContainer}
             />
+            {/* <PrivateRoute 
+                component={CheckoutComplete}
+                path={`/order-complete/:checkoutToken/:orderId`}
+                setCheckout={setCheckout} 
+            /> */}
             <Route path="/order-complete/:checkoutToken/:orderId" render={props => {
                 return (
                     <CheckoutComplete 
