@@ -29,6 +29,12 @@ const CheckoutForm = (props) => {
 
 
     useEffect(() => {
+
+        /* 
+            Takes Line Items from props and strutures the data 
+            Object added to state   
+        */
+
         let lineItems = {}
 
         props.liveObject.line_items.forEach(item => {
@@ -49,10 +55,13 @@ const CheckoutForm = (props) => {
     }, [])
 
     useEffect(() => {
+        /* *** Takes the Shipping Country and updates shipping Options *** */
         props.getShippingOptions(shipCountry)
     }, [shipCountry])
 
     const getCountryInfoShipping = () => {
+
+        /* *** Gives user proper options based on Shipping Country *** */
         
         if (shipCountry === 'MX') {
             return mexico
@@ -68,6 +77,8 @@ const CheckoutForm = (props) => {
     }
     
     const getCountryInfoBilling = () => {
+
+        /* *** Gives user proper options based on Shipping Country *** */
         
         if (billingShipCountry === 'MX') {
             return mexico
@@ -83,12 +94,20 @@ const CheckoutForm = (props) => {
     }
 
     const handleCheckBox = e => {  
+        /* *** Toggles Checkbox on/off *** */
         setSameBilling(!sameBilling)
     }
 
     const onSubmit = (data) => {
+
+        /* *** 
+            Takes in all the data gathered from the Form
+            Parses the data properly to match the shape for capture
+        *** */
+
         // console.log(data, 'data from form')
         setProcessing(true)
+
         let final = {}
 
         final.line_items = lineItems
@@ -147,7 +166,6 @@ const CheckoutForm = (props) => {
                     }
 
                     if (props.shipOption) {
-                        // console.log(final, 'ready to process INSIDE STRIPE')
                         commerce.checkout.capture(props.tokenId, final)
                             .then(res => {
                                     // console.log(res, 'res from CAPTURING CHECKOUT!!!')
@@ -178,7 +196,6 @@ const CheckoutForm = (props) => {
             }
 
             if (props.shipOption) {
-                // console.log(final, 'ready to process - TEST GATEWAY')
                 commerce.checkout.capture(props.tokenId, final)
                     .then(res => {
                             // console.log(res, 'res from CAPTURING CHECKOUT!!!')

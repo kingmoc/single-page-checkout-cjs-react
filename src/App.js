@@ -98,10 +98,12 @@ function App() {
             </CartItemsContext.Provider>
 
             <Grid centered stackable padded relaxed>
+                {/* <LeftPanel /> */}
                 <Grid.Column className='left-column' width={5}>
-                    {/* <LeftPanel /> */}
                     <Route exact path="/" component={LeftPanel} />
                 </Grid.Column>
+
+                {/* <Right Panel /> */}
                 <Grid.Column width={9}>
                     <Route exact path="/" render={props => {
                         return (
@@ -114,6 +116,7 @@ function App() {
                     }}/>
                 </Grid.Column>
             </Grid>
+
             {/* Route to Checkout */}
             <PrivateRoute 
                 component={CheckoutContainer}
@@ -134,7 +137,8 @@ function App() {
                         setCheckout={setCheckout}
                     />
                 )
-            }}/>
+                }}
+            />
             <Footer />
         </div>
   );

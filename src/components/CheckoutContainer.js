@@ -22,6 +22,9 @@ const CheckoutContainer = (props) => {
 
 
     useEffect(() => {
+
+        /* *** Getting Checkout Token - Set Live Object in State *** */
+
         let cartId = props.match.params.id
         commerce.checkout.generateToken(cartId, { type: 'cart' })
             .then(res => {
@@ -38,7 +41,10 @@ const CheckoutContainer = (props) => {
 
     const getShippingOptions = (countrySymbol) => {
 
-        // console.log(countrySymbol, 'country from form selection')
+        /* 
+        Getting the Customer's Shipping Options based on the Country
+        Function is triggered once user selects country in CheckoutForm. 
+        */
 
         if (countrySymbol) {
             commerce.checkout.getShippingOptions(tokenId, {
@@ -62,10 +68,16 @@ const CheckoutContainer = (props) => {
     }
 
     const handleReturnCart = e => {
+        /* *** Make Sure user is returned to modal with Cart Info *** */
         props.setModalOpen(true)
     }
 
-    const handleDropDownShipping = (e, {value, options}) => {  
+    const handleDropDownShipping = (e, {value, options}) => { 
+        
+        /* 
+        Applies shipping option to Cart Total
+        Updates Live Object in state 
+        */
 
         commerce.checkout.checkShippingOption(tokenId, {
             id: value,
@@ -81,12 +93,15 @@ const CheckoutContainer = (props) => {
     }
 
     const handleDiscountCode = (e, {value}) => {
+        /* Putting Discount Code in State */
         setDiscountCode(value)
     }
     
     const handleDiscountClick = (e) => {
+
+        /* *** Checking to Make Sure Discount Code is Valid *** */
+
         e.preventDefault()
-        // console.log(discountCode, 'Discount Code')
 
         if (!discountCode) {
             setNoDiscountCode(true)
@@ -95,7 +110,6 @@ const CheckoutContainer = (props) => {
             commerce.checkout.checkDiscount(tokenId, {code: discountCode})
                 .then(res => {  
                     // console.log(res, 'res from checking discount code')
-
                     if (!res.valid) {
                         setInvalidDiscountCode(true)
                     } else {
@@ -105,7 +119,6 @@ const CheckoutContainer = (props) => {
                     }
                     
                     setNoDiscountCode(false)
-                    
                 })
                 .catch(err => console.log(err))
         }
@@ -126,16 +139,19 @@ const CheckoutContainer = (props) => {
                         />
                     )}
                 </Grid.Column>
+
                 <Grid.Column width={6}>
                     <Segment padded>
                         <Header textAlign='center' size='huge'>Current Cart</Header>
                         <Header onClick={handleReturnCart} textAlign='center'><Link to='/'>Return to Cart</Link></Header>
+
                         {liveObject && liveObject.line_items.map(item => (
                             <Container className='item-data-container' key={item.id}>
                                 <CheckoutItems item={item}/>
                             </Container>
                         ))}
                         <Divider horizontal>Shipping Options</Divider>
+
                         <Dropdown
                             placeholder='Select Shipping Method'
                             fluid
@@ -143,8 +159,10 @@ const CheckoutContainer = (props) => {
                             onChange={handleDropDownShipping}
                             options={shippingOptions}
                         />
+
                         {!shipOption && <p>Select Country for Shipping Options</p>} 
                         <Divider horizontal>Discount Code</Divider>
+
                         <form className='discount-code' onSubmit={handleDiscountClick}>
                             <Input onChange={handleDiscountCode} />
                             <Button color='black'>Apply</Button>     
@@ -160,7 +178,7 @@ const CheckoutContainer = (props) => {
                                         color='olive' 
                                         textAlign='center'
                                     >
-                                        (Shipping) +{liveObject.shipping.price.formatted}
+                                        (Shipping) + {liveObject.shipping.price.formatted}
                                     </Header>
                                 )}
                                 {liveObject.discount.length !== 0 && (

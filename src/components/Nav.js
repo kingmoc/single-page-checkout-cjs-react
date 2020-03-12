@@ -37,9 +37,11 @@ const Nav = (props) => {
                 <Menu.Item>
                     <Link to='/'><Image src={logo} size='tiny' /></Link>
                 </Menu.Item>
+
                 <Menu.Item position='right'>
                     <Input icon='search' placeholder='Search...' />
                 </Menu.Item>
+                
                 <Menu.Item>
                     <Modal 
                         trigger={iconDisplay()}
