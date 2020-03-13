@@ -63,8 +63,9 @@ Navigate to each individual product and click the enable zone button.  This is w
 This is an important step and must be completed before you can capture a checkout. As you will see further in this guide, the shipping option is needed for Chec to process and finalize an order. You also want to give customers a shipping price so they have a total amount due. In our checkout form, once the customer chooses their country – the shipping options available for that country will be presented.  
 
 ### Step 2. Add Checkout Button & Setup Route to Form
+![](src/img/Guide-3/checkout-button.JPG)
 
-The next thing we need to do is add a checkout button to the cart modal where all our products are listed.  Adding the button is pretty straight forward, but this button will have an `onClick` which will call a functin with a few triggers - one of them is routing to our checkout form.  
+The next thing we need to do is add a checkout button to the cart modal where all our products are listed.  Adding the button is pretty straight forward, but this button will have an `onClick` which will call a function with a few triggers - one of them is routing to our checkout form.  
 
 ```javascript
 // *** CartModal.js ***
@@ -88,13 +89,80 @@ const goToCheckout = e => {
 }
 ```
 
-React Router has an history object that we use here to 'push' the customer to the page of our choice.  In this case to the checkout page.  I'm also adding the `cart_id` to the url.  The `cart_id` is needed data for important SDK helper function calls so adding it the url makes it easy to access in the next component.  
+React Router has a history object that we use here to 'push' the customer to the page of our choice.  In this case to the checkout page.  I'm also adding the `cart_id` to the URL.  The `cart_id` is needed data for important SDK helper function calls, so adding it the URL makes it easy to access in the next component.  
 
-I'm also added the `cart-id` to local storage as trigger for the private route. Bascially if there's no `cart-id` in local storage - you can't route to this page.  `props.setModalOpen(false)` is the trigger to close the modal and `props.setCheckout(true)` is the trigger to NOT show the cart icon in the Nav. 
+I'm also added the `cart-id` to local storage as trigger for the private route. Basically if there's no `cart-id` in local storage - you can't route to this page.  `props.setModalOpen(false)` is the trigger to close the modal and `props.setCheckout(true)` is the trigger to NOT show the cart icon in the Nav (*we want to hide icon during checkout*). 
 
 #### Setting up our Route
 
-![](src/img/variant-property.JPG)
+As previously mentioned, this is not a deep dive into React or React Router, but here's an overview on setting up some routes.  First you need to install the proper dependencies `react-router` & `react-router-dom`.  In the index.js file you need to import the BrowserRouter: 
+
+```javascript
+// *** index.js ***
+import { BrowserRouter as Router } from "react-router-dom";
+
+ReactDOM.render(
+    <Router>
+        <App />
+    </Router>
+,document.getElementById('root'));
+```
+
+I'm wrapping the `<Router>` component around the `<App />` component so everything in our `<App />` component can access any routes I setup.  All the routes for your app will be setup in the `App />` component.  If you take a look in the `App.js` you'll notice a `Route` import: 
+
+```
+import { Route } from 'react-router-dom'
+```
+
+This component will be used to render our component based on a few properties ... 
+
+```javascript
+// *** App.js ***
+<PrivateRoute 
+    component={CheckoutContainer}
+    path={`/checkout/:id`} 
+    setCheckout={setCheckout}
+    setModalOpen={setModalOpen}
+    setReceipt={setReceipt}
+/>
+```
+
+*** *Note *** `<PrivateRoute />` (**check PrivateRoute.js**) is a High Order Component created as sort of a middleware to allow logic to determine where a cutomer is routed*
+
+You will notice the component prop which is set equal to the component that needs to rendered.  The path is what the URL will be for this route and the rest of the props are needed to be passed along to be used in the `<CheckoutContainer />` component.  Here's another route setup for our homepage:
+
+```javascript
+// *** App.js ***
+<Route exact path="/" render={props => {
+    return (
+        <ProductContainer 
+            {...props}
+            addToCart={addToCart}
+            setCheckout={setCheckout}
+        />
+    )
+}}/>
+```
+Because this isn't a '*Private Route*' I use the render prop which takes a function and returns our component.  So anytime a customer hits the hope page, they will be routed to our `<ProductContainer />` component (*component that is listing our products*).  
+
+If you recall for the checkout button we pushed the customer to this path: 
+```
+history.push(`/checkout/${props.cart.id}`)
+```
+And in our App.js, we have route setup to that exact path: 
+```
+<PrivateRoute 
+    component={CheckoutContainer}
+    path={`/checkout/:id`} 
+```
+
+the `:id` is just a foo name that is a variable for whatever text you put there.  In our case we're setting `props.cart.id` equal to `:id`.  This can later be accessed on the match object - `props.match.params.id`
+
+![](src/img/Guide-3/checkout-url.JPG)
+
+Now that our routes are setup - it is time to build our form! 
+
+### Step 3. Create Form
 
 We can handle this data in our `<ProuductCard />` component where we are currently displaying product info. You can display the options how you like, but our example will use a drop-down. Because of how drop-downs are configured with Semantic UI - we have to provide an options array of objects with a certain format. 
 
