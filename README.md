@@ -1,6 +1,6 @@
-# Adding products to your cart using Commerce.js (SDK) and React.js
+# Creating a single page checkout using Commerce.js (SDK) and React.js
 
-This guide illustrates how to add products to your cart using React.js & Commerce.js (SDK)
+This guide explains the process and procedure to capture a checkout using React.js & Commerce.js (SDK)
 
 [See live demo here.](https://seities-store-cjs-react-guide.netlify.com/)
 
@@ -8,25 +8,31 @@ This guide illustrates how to add products to your cart using React.js & Commerc
 
 * *This guide is using v2 of the SDK*
 * *The Live Demo is best viewed on Desktop (**responsiveness limited**)*
-* *This is a continuation of a previous guide - [Listing Products in Catalog](https://github.com/kingmoc/product-list-cjs-react)*
+* *This is a continuation of a previous guide - [Adding products to your cart](https://github.com/kingmoc/adding-products-cart-cjs-react)*
 
 **********
 
-![](src/img/home-screen-shot2.JPG)
+![](src/img/Guide-3/hero-3.JPG)
 
 ## Overview
-Okay! So you've been working hard adding all your wonderful products to your Chec Dashboard.  Now it's time to give the user the ability to add those products to the cart.  This process involves a few more steps but don't worry - this guide has you covered! One of the biggest advantages of using the Commerce.js (SDK) is that the commerce object has easy to implement functions that help with building out the cart functionality.  Further and most importantly, every cart method such as `cart.add()`, `cart.retrieve()`, `cart.update()` return an updated cart object which helps keep our cart updated and persistent through a refresh.  Now, let's dive in!
+You now have come to an important part of the eCommerce journey - payment processing and capturing an order.  And just a quick recap: we added some products to the Chec Dashboard and listed them on our site, we were then able to add chosen products to the cart, and now we want those items in the cart to be processed - get customer information and finalize payment; all with Commerce.js and the SDK.  The order will then be added to your Chec dashboard along with customer info and other important information.  There's a lot of information packed into this guide, so let's dive in!   
 
 #### This guide will cover: 
 
-1. Setting up variants and handling that in code 
-2. The process to add a product to your cart 
-3. Making sure to give cart update notification to user 
-4. Listing items that have been added to cart 
-5. Adding a button to empty entire cart 
-6. Capability to increase/decrease quantity from within cart
+1. Create new shipping zone & add zone to product 
+2. Add checkout button & setup route to checkout form 
+3. Create Form
+4. Handling Form Data/Validation 
+5. Update selected shipping cost to total 
+6. Handling Discount Code
+7. Capturing Checkout
+8. Handling Errors
+9. Route to conformation page (*Thanks for Your Order*)
 
-*This guide strictly utilizes functional react components and relies heavenly on react hooks.  The purpose of this guide is to show how you can use the SDK to build eCommerce functionality and not a true deep dive into react. There will be links to outside resources that can further explain certain react features.*
+##### ***** *Extra* *****
+10. How to implement Stripe as a payment gatway
+*******
+*This guide strictly utilizes functional react components and relies heavenly on react hooks and dynamic rendering.  The purpose of this guide is to show how you can use the SDK to build eCommerce functionality and not a true deep dive into react. There will be links to outside resources that can further explain certain react features.*
 
 ### Requirements/Prerequisites
 
@@ -34,21 +40,59 @@ Okay! So you've been working hard adding all your wonderful products to your Che
 - [ ] [NodeJS](https://nodejs.org/en/), or [yarn](https://classic.yarnpkg.com/en/docs/install/#windows-stable) → npm or yarn.
 - [ ] Some knowledge of Javascript & React
 - [ ] *Bonus* - Using [React Hooks](https://reactjs.org/docs/hooks-reference.html) - specifically `useState()`, `useEffect()`, `useContext()`
+- [ ] *Bonus* - familiarity with [React Router](https://reacttraining.com/react-router/web/api/Route)
+- [ ] *Bonus* - familiarity with [Stripe](https://stripe.com/docs)
 - [ ] *Bonus* - familiarity with the framework [Semantic UI (react) library](https://react.semantic-ui.com/)
 
 ## Getting Started
 
-### STEP 1. Adding Variants:
+### STEP 1. Creating Shipping Zone & Adding to Product:
 
-This step is important when having products with some sort of variance.  If you have a product without variances, you can proceed to Step 2. - otherwise you need to add product variances in your Chec Dashboard.  In our example store selling t-shirts, most likely you'll have different sizes and colors.  To keep it simple we will be providing one variant and three options of **Small, Medium, Large**. Once you click on a product, select the options tab ...   
+One of the most important steps to capturing an order is determining the logistics of how you will ship your products.  You need to answer questions like: Where will I ship? How much will I charge? Will it be a flat fee to place A etc...
 
-![](src/img/add-variant.JPG)
+For this example, we will have 3 shipping zones: United States, Mexico, Canada.  I will be charging a flat rate (see below) for each zone and in order to set this up, you must navigate to the ***Shipping Tab*** within your setup and click **Add Zone**
 
-It's important to note that you shouldn't add a price in this section unless a particular variant yields an increase in price. So in our case no matter which size you select, the price remains $25. Save those changes and let's see how we can handle this in our code! 
+![](src/img/Guide-3/shipping-zone.JPG)
 
-#### Handling Variants in the code
+Now that I've added the shipping zones I wish to ship to, including price - I must further add these zones to my product.  Each product can have different shipping zones but for simplicity I'm going to add all three zones to every product in the catalog. 
 
-The Product object has a property *`variants`* which is an array with each product variant.  Also within each variant is another property *`options`* which is also an array with each variant options (ex. Small, Medium etc...) 
+Navigate to each individual product and click the enable zone button.  This is will enable a particular shipping option for the product.  You can also add any extra shipping cost such as an amount for one order vs multiple.  
+
+![](src/img/Guide-3/product-zones.JPG)
+
+This is an important step and must be completed before you can capture a checkout. As you will see further in this guide, the shipping option is needed for Chec to process and finalize an order. You also want to give customers a shipping price so they have a total amount due. In our checkout form, once the customer chooses their country – the shipping options available for that country will be presented.  
+
+### Step 2. Add Checkout Button & Setup Route to Form
+
+The next thing we need to do is add a checkout button to the cart modal where all our products are listed.  Adding the button is pretty straight forward, but this button will have an `onClick` which will call a functin with a few triggers - one of them is routing to our checkout form.  
+
+```javascript
+// *** CartModal.js ***
+<Button 
+    floated='left' 
+    size='big' 
+    color='blue' 
+    onClick={goToCheckout}
+>
+    Checkout
+</Button>
+```
+
+```javascript
+// *** CartModal.js ***
+const goToCheckout = e => {
+    history.push(`/checkout/${props.cart.id}`)
+    localStorage.setItem('cart-id', props.cart.id)
+    props.setModalOpen(false)
+    props.setCheckout(true)
+}
+```
+
+React Router has an history object that we use here to 'push' the customer to the page of our choice.  In this case to the checkout page.  I'm also adding the `cart_id` to the url.  The `cart_id` is needed data for important SDK helper function calls so adding it the url makes it easy to access in the next component.  
+
+I'm also added the `cart-id` to local storage as trigger for the private route. Bascially if there's no `cart-id` in local storage - you can't route to this page.  `props.setModalOpen(false)` is the trigger to close the modal and `props.setCheckout(true)` is the trigger to NOT show the cart icon in the Nav. 
+
+#### Setting up our Route
 
 ![](src/img/variant-property.JPG)
 
