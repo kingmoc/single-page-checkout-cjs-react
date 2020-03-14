@@ -143,7 +143,9 @@ const CheckoutContainer = (props) => {
                 <Grid.Column width={6}>
                     <Segment padded>
                         <Header textAlign='center' size='huge'>Current Cart</Header>
-                        <Header onClick={handleReturnCart} textAlign='center'><Link to='/'>Return to Cart</Link></Header>
+                        <Header onClick={handleReturnCart} textAlign='center'>
+                            <Link to='/'>Return to Cart</Link>
+                        </Header>
 
                         {liveObject && liveObject.line_items.map(item => (
                             <Container className='item-data-container' key={item.id}>

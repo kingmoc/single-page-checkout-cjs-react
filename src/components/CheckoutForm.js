@@ -100,116 +100,116 @@ const CheckoutForm = (props) => {
 
     const onSubmit = (data) => {
 
+        console.log(data, 'data from handleSubmit()')
+
         /* *** 
             Takes in all the data gathered from the Form
             Parses the data properly to match the shape for capture
         *** */
 
         // console.log(data, 'data from form')
-        setProcessing(true)
+        // setProcessing(true)
 
-        let final = {}
+        // let final = {}
 
-        final.line_items = lineItems
+        // final.line_items = lineItems
 
-        final.fulfillment = {
-            shipping_method: props.shipOption
-        }
+        // final.fulfillment = {
+        //     shipping_method: props.shipOption
+        // }
 
-        final.customer = {
-            firstname: data.firstname,
-            lastname: data.lastname,
-            email: data.email
-        }
+        // final.customer = {
+        //     firstname: data.firstname,
+        //     lastname: data.lastname,
+        //     email: data.email
+        // }
 
-        final.shipping = {
-            name: `${data.firstname} ${data.lastname}`,
-            street: data.street,
-            town_city: data.town_city,
-            county_state: data.county_state,
-            postal_zip_code: data.postal_zip_code,
-            country: data.country
-        }
+        // final.shipping = {
+        //     name: `${data.firstname} ${data.lastname}`,
+        //     street: data.street,
+        //     town_city: data.town_city,
+        //     county_state: data.county_state,
+        //     postal_zip_code: data.postal_zip_code,
+        //     country: data.country
+        // }
 
-        if (sameBilling) {
-            final.billing = final.shipping
-        } else {
-            final.billing = {
-                name: data.billing_name,
-                street: data.billing_street,
-                town_city: data.billing_town_city,
-                county_state: data.billing_county_state,
-                postal_zip_code: data.billing_postal_zip_code,
-                country: data.billing_country
-            }
-        }
+        // if (!sameBilling) {
+        //     final.billing = {
+        //         name: data.billing_name,
+        //         street: data.billing_street,
+        //         town_city: data.billing_town_city,
+        //         county_state: data.billing_county_state,
+        //         postal_zip_code: data.billing_postal_zip_code,
+        //         country: data.billing_country
+        //     }
+        // }
 
-        if (data.gateway === 'stripe') {
+        // if (data.gateway === 'stripe') {
 
-            let stripInfo = {
-                name: `${data.firstname} ${data.lastname}`,
-                number: data.number,
-                exp_month: data.expiry_month,
-                exp_year: data.expiry_year,
-                cvc: data.cvc,
-                address_zip: data.postal_billing_zip_code
-            }
+        //     let stripInfo = {
+        //         name: `${data.firstname} ${data.lastname}`,
+        //         number: data.number,
+        //         exp_month: data.expiry_month,
+        //         exp_year: data.expiry_year,
+        //         cvc: data.cvc,
+        //         address_zip: data.postal_billing_zip_code
+        //     }
 
-            axiosWithAuth().post('/tokens', qs.stringify({card: stripInfo}))
-                .then(res => {
-                    // console.log(res, 'res from token call')
-                    final.payment = {
-                        gateway: data.gateway,
-                        card: {
-                            token: res.data.id
-                        }
-                    }
+        //     axiosWithAuth().post('/tokens', qs.stringify({card: stripInfo}))
+        //         .then(res => {
+        //             // console.log(res, 'res from token call')
+        //             final.payment = {
+        //                 gateway: data.gateway,
+        //                 card: {
+        //                     token: res.data.id
+        //                 }
+        //             }
 
-                    if (props.shipOption) {
-                        commerce.checkout.capture(props.tokenId, final)
-                            .then(res => {
-                                    // console.log(res, 'res from CAPTURING CHECKOUT!!!')
-                                    props.setReceipt(res)
-                                    localStorage.removeItem('cart-id')
-                                    history.push(`/order-complete/${props.tokenId}/${res.id}`)
-                                    setProcessing(false)
-                            })
-                            .catch(err => {
-                                    window.alert(err.data.error.message)
-                                    setProcessing(false)
-                            })
-                    }
-                })
-                .catch(err => {
-                    console.log(err.data, 'error message')
-                })
-        } else {
-            final.payment = {
-                gateway: data.gateway,
-                card: {
-                    number: data.number,
-                    expiry_month: data.expiry_month,
-                    expiry_year: data.expiry_year,
-                    cvc: data.cvc,
-                    postal_zip_code: data.postal_billing_zip_code,
-                }
-            }
+        //             if (props.shipOption) {
+        //                 commerce.checkout.capture(props.tokenId, final)
+        //                     .then(res => {
+        //                             // console.log(res, 'res from CAPTURING CHECKOUT!!!')
+        //                             props.setReceipt(res)
+        //                             localStorage.removeItem('cart-id')
+        //                             history.push(`/order-complete/${props.tokenId}/${res.id}`)
+        //                             setProcessing(false)
+        //                     })
+        //                     .catch(err => {
+        //                             window.alert(err.data.error.message)
+        //                             setProcessing(false)
+        //                     })
+        //             }
+        //         })
+        //         .catch(err => {
+        //             console.log(err.data, 'error message')
+        //         })
+        // } else {
+        //     final.payment = {
+        //         gateway: data.gateway,
+        //         card: {
+        //             number: data.number,
+        //             expiry_month: data.expiry_month,
+        //             expiry_year: data.expiry_year,
+        //             cvc: data.cvc,
+        //             postal_zip_code: data.postal_billing_zip_code,
+        //         }
+        //     }
 
-            if (props.shipOption) {
-                commerce.checkout.capture(props.tokenId, final)
-                    .then(res => {
-                            // console.log(res, 'res from CAPTURING CHECKOUT!!!')
-                            props.setReceipt(res)
-                            localStorage.removeItem('cart-id')
-                            history.push(`/order-complete/${props.tokenId}/${res.id}`)
-                            setProcessing(false)
-                    })
-                    .catch(err => {
-                            window.alert(err.data.error.message)
-                            setProcessing(false)
-                    })
-            }
-        }
+        //     if (props.shipOption) {
+        //         commerce.checkout.capture(props.tokenId, final)
+        //             .then(res => {
+        //                     // console.log(res, 'res from CAPTURING CHECKOUT!!!')
+        //                     props.setReceipt(res)
+        //                     localStorage.removeItem('cart-id')
+        //                     history.push(`/order-complete/${props.tokenId}/${res.id}`)
+        //                     setProcessing(false)
+        //             })
+        //             .catch(err => {
+        //                     window.alert(err.data.error.message)
+        //                     setProcessing(false)
+        //             })
+        //     }
+        // }
     }
         
     return (
