@@ -1,4 +1,4 @@
-their# Creating a single page checkout using Commerce.js (SDK) and React.js
+# Creating a single page checkout using Commerce.js (SDK) and React.js
 
 This guide explains the process and procedure to capture a checkout using React.js & Commerce.js (SDK)
 
