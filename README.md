@@ -24,11 +24,10 @@ You now have come to an important part of the eCommerce journey - payment proces
 3. Create Form
 4. Handling Form Data/Validation/Errors 
 5. Handling Discount Code
-6. Capturing Checkout
-7. Route to conformation page (*Thanks for Your Order*)
+6. Capturing Checkout & route to Thank You page (*Thanks for Your Order*)
 
 ##### ***** *Extra* *****
-8. How to implement Stripe as a payment gatway
+How to implement Stripe as a payment gatway
 *******
 *This guide strictly utilizes functional react components and relies heavenly on react hooks and dynamic rendering.  The purpose of this guide is to show how you can use the SDK to build eCommerce functionality and not a true deep dive into react. There will be links to outside resources that can further explain certain react features.*
 
@@ -51,7 +50,9 @@ One of the most important steps to capturing an order is determining the logisti
 
 For this example, we will have 3 shipping zones: United States, Mexico, Canada.  I will be charging a flat rate (see below) for each zone and in order to set this up, you must navigate to the ***Shipping Tab*** within your setup and click **Add Zone**
 
-![](src/img/Guide-3/shipping-zone.JPG)
+<p align="center">
+  <img src="src/img/Guide-3/shipping-zone.JPG">
+</p>
 
 Now that I've added the shipping zones I wish to ship to, including price - I must further add these zones to my product.  Each product can have different shipping zones but for simplicity I'm going to add all three zones to every product in the catalog. 
 
@@ -59,12 +60,16 @@ Now that I've added the shipping zones I wish to ship to, including price - I mu
 
 Navigate to each individual product and click the enable zone button.  This is will enable a particular shipping option for the product.  You can also add any extra shipping cost such as an amount for one order vs multiple.  
 
-![](src/img/Guide-3/product-zones.JPG)
+<p align="center">
+  <img src="src/img/Guide-3/product-zones.JPG">
+</p>
 
 This is an important step and must be completed before you can capture a checkout. As you will see further in this guide, the shipping option is needed for Chec to process and finalize an order. You also want to give customers a shipping price so they have a total amount due. In our checkout form, once the customer chooses their country – the shipping options available for that country will be presented.  
 
 ### Step 2. Add Checkout Button & Setup Route to Form
-![](src/img/Guide-3/checkout-button.JPG)
+<p align="center">
+  <img src="src/img/Guide-3/checkout-button.JPG">
+</p>
 
 The next thing we need to do is add a checkout button to the cart modal where all our products are listed.  Adding the button is pretty straight forward, but this button will have an `onClick` which will call a function with a few triggers - one of them is routing to our checkout form.  
 
@@ -303,7 +308,9 @@ So, the options property for this dropdown ...
 ```
 is set to a function - this function checks what Country was selected and returns the proper array for that country: 
 
-![](src/img/Guide-3/countryG.gif)
+<p align="center">
+  <img src="src/img/Guide-3/countryG.gif">
+</p>
 
 ```
 // *** CheckoutForm.js ***
@@ -328,7 +335,9 @@ const getCountryInfoShipping = () => {
 
 #### Payment
 
-![](src/img/Guide-3/payment-info-n.JPG)
+<p align="center">
+  <img src="src/img/Guide-3/payment-info-n.JPG">
+</p>
 
 ```javascript
 // *** CheckoutForm.js ***
@@ -390,7 +399,9 @@ These are all the fields needed to collect information about payment.  I had to 
 
 #### Fufillment
 
-![](src/img/Guide-3/shipping-option.JPG)
+<p align="center">
+  <img src="src/img/Guide-3/shipping-option.JPG">
+</p>
 
 This is the last important piece of data you need to complete a checkout.  The customer needs to be able to select a shipping option.  The shipping option is determined by country - remember our shipping zones.  
 
@@ -575,638 +586,220 @@ const onSubmit = (data) => {
 
 As you can see there's an argument `data` that we will log and get some eyes on what is passed to our function.  You'll notice that all of our form data has been set as the value and each name set as the key.  
 
-![](src/img/Guide-3/data-object.JPG)
+<p align="center">
+  <img src="src/img/Guide-3/data-object.JPG">
+</p>
 
 We have all our data from the form!  The convenient part is that this function never runs unless all input meets validation.  I set required to all inputs so this function ONLY runs if nothing is left blank.  All that is left is formatting the data properly to match how the Commerce.js SDK will process our data.  
 
 ### Step. 5 Handling Discount Code
 
+One last quick procedure (*before we capture*) and that is handling a discount code. You must first add the discount code in your Chec dashboard. Navigate to discounts from the left-side menu and then click Add Discount: 
 
+![](src/img/Guide-3/discount.JPG)
 
-<!-- ```javascript
-// *** ProductCard.js ***
-
-    useEffect(() => {        
-        
-        let finalSizeArray = props.product.variants[0].options.map(option => {
-            let sizeInfo = {}
-
-            sizeInfo.key = option.name
-            sizeInfo.text = option.name
-            sizeInfo.value = option.id
-
-            return sizeInfo
-        })
-
-        setSizes(finalSizeArray)
-    }, [])
-```
-
-The purpose of the `useEffect()` here is that our `<Dropdown />` Semantic UI component needs options to select.  The `useEffect()` allows us to map through our variant options and create our options array before the render.  It's important to note I set the value to the option.id because that is data needed to add a product (and it's variant) to the cart.  Once complete, we add that value to state so our `<Dropdown />`  component can then access it.  
-
-```
-const [sizes, setSizes] = useState([])
-```
-
-This is how our Product Card looks once we add our dropdown: 
+I will be setting one discount code and it will be **LUCKY**.  You have the option to apply the code to a particular product, but to keep it simple I will add the code to all products.  I now need to add an input and a button: 
 
 ```javascript
-// *** ProductCard.js ***
-
-<Card>
-    <Image src={props.product.media.source} />
-    <Card.Content>
-        <Card.Header>{props.product.name}</Card.Header>
-        <Card.Meta>{props.product.price.formatted_with_symbol}</Card.Meta>
-        <Card.Description>{props.product.description.replace(/(<([^>]+)>)/ig,"")}</Card.Description>
-        <Dropdown
-            className="sizes-drop"
-            onChange={handleSize}
-            value={sizes.text}
-            fluid
-            placeholder='Select Size'
-            selection
-            options={sizes}
-        />
-    </Card.Content>
-</Card>
+<form className='discount-code' onSubmit={handleDiscountClick}>
+    <Input onChange={handleDiscountCode} />
+    <Button color='black'>Apply</Button>     
+</form>
 ```
 
-Now it's time to write the ***onChange*** function `handleSize()` that will capture the selection and put that data into state: 
+As mentioned before in regards to selecting the shipping option - the discount code input is separate from our 'main' form (*no need for `react-form-hook` to handle one input*).  The input has a `onChange` that simply stores whatever is typed into state.  The `onSubmit` will take that text and try to apply.  
 
 ```javascript
-// *** ProductCard.js ***
+// *** CheckoutContainer.js ***
+const handleDiscountClick = (e) => {
 
-const [variantInfo, setVariantInfo] = useState()
+    /* *** Checking to Make Sure Discount Code is Valid *** */
 
-const handleSize = (e, {value}) => {
-    setVariantInfo({[props.product.variants[0].id]: value})
-}
-```
-
-This function creates an object that matches the proper format for sending variant info using the `cart.add()` method from the SDK. 
-```
- { vrnt_RyWOwmPO9lnEa2: 'optn_zkK6oLpvEoXn0Q' }
- ```
-
- We now have an object variable (`variantInfo`) that contains the variantID along with the selected variant optionID.  
-
-
-### STEP 2. Addding Product to Cart:
-
-This is where the fun begins! Just a point of note, you're going to see a pattern emerge where we add an action button - write a function to handle said action, then pass that function to the component that needs it.  But before we do any of that, we need to setup the state that will be holding our cart object for the entire app.  
-
-```
-// *** App.js ***
-
-const [cart, setCart] = useState()
-```
-
-There are many ways to handle state management, which also includes organization.  For our example we will be putting our 'global state' (***state that needs accessed across many components***) inside our `<App />` component.  For shallow nested components we will prop drill - for the deeply nested components we will use the [`useContext()` API](https://reactjs.org/docs/hooks-reference.html#usecontext).  
-
-Let's write our `addToCart()` function that will take two args - a ***productId*** and the ***variantInfo*** variable we talked about earlier:  
-
-```javascript
-// *** App.js ***
-
-const addToCart = (productId, variantInfo) => {
-
-    if(variantInfo) {
-        commerce.cart.add(productId, 1, variantInfo)
-            .then(res => {
-                setCart(res.cart)
-            })
-    } else {
-        window.alert('Please Select a Shirt Size')
-    }
-}
-```
-
-We have some logic to make sure the user selects a variant (*it's required to select a variant in order to add it to the cart*). We also hard-code the quantity to 1 because our cart page is where a customer can change the quantity. Lastly upon a successful response we'll add the cart object to our global cart state. 
-
-#### Utilization of `cart.retrieve()`
-
-This is a very important method because when called it returns your most up to date cart info.  We want to use this method in our `<App />` component to always be checking for the latest cart data.  As you will see, this also helps us with data persistence in the event of a refresh or re-render.   
-
-```javascript
-// *** App.js ***
-
-useEffect(() => {
-    commerce.cart.retrieve()
-        .then(res => {
-            setCart(res)
-        })
-},[])
-```
-
-Let's take a look at our `<App />` component with all the updates: 
-
-```javascript
-// *** App.js ***
-
-function App() {
-
-    const commerce = new Commerce(process.env.REACT_APP_PUBLICKEY_SANDBOX)
-
-    const [cart, setCart] = useState()
-
-    useEffect(() => {
-        commerce.cart.retrieve()
-            .then(res => {
-                setCart(res)
-            })
-    },[])
-
-    const addToCart = (productId, variantInfo) => {
-
-        if(variantInfo) {
-            commerce.cart.add(productId, 1, variantInfo)
-                .then(res => {
-                    setCart(res.cart)
-                })
-        } else {
-            window.alert('Please Select a Shirt Size')
-        }
-    }
-
-    return (
-        <div className="App">
-            <Nav cart={cart} emptyCart={emptyCart}/>
-            <Grid centered stackable padded relaxed>
-                <Grid.Column className='left-column' width={5}>
-                    <LeftPanel />
-                </Grid.Column>
-                <Grid.Column width={9}>
-                    <ProductContainer 
-                        addToCart={addToCart} 
-                    />
-                </Grid.Column>
-            </Grid>
-            <Footer />
-        </div>
-  );
-}
-```
-
-We have our `cart.retrieve()` always making sure our cart object is up to date, our `addToCart()` function that is being passed to our `<ProductContainer />` component -  which will then be passed to our `<ProductCard />` component.  
-
-#### Add to Cart Button
-
-Now that we have everything setup in our `<App />` and have also passed the `addToCart()` function to the proper component - we need to create a button that will trigger our function and add the product (and its variant) to the cart, and also update our state cart object. 
-
-```javascript
-// *** ProductCard.js ***
-
-const handleButtonAddCart = e => {
     e.preventDefault()
-    props.addToCart(props.product.id, variantInfo)
-}
 
-<Button fluid className='add-button' onClick={handleButtonAddCart}>
-    Add to Cart
-    <Icon name='arrow right' />
-</Button>
-```
-
-As you can see we call our `addToCart()` function with the two required args which then runs and executes letting us know a product has been added to our cart! 
-
-![](src/img/cart-success.JPG)
-
-### STEP 3. Add Cart Notification:
-
-Once we've added an item/product to the cart, we need to let the user know something has been added to the cart.  This can be done in many ways: you can give a message, pop up a modal etc... In our case we will changing the cart Icon from the normal black color to a green color with a number associated with the amount of items in the cart.  
-
-![](src/img/cart-notification.png)
-
-#### Display for Empty Cart
-
-When the cart is empty as mentioned we only want to show the black cart icon, and when you click the cart we want to show an empty cart. For this example our cart page will be a modal.  Once clicked a modal will pop up saying our cart is empty.  
-
-This is accomplished by sending our cart object from state to our `<Nav />` component.  
-```javascript
-// *** App.js ***
-
-<Nav cart={cart} emptyCart={emptyCart}/>
-```
-
-The cart object has all the necessary data required to display what's needed to the user.  And, if you recall because we're updating our cart object in state whenever there are changes, we can attach key data to our cart object and ensure that the cart information is correct.
-
-Here's a look at the cart object with key data points underlined ... 
-
-![](src/img/cart-object.JPG)
-
-This is one of the best benefits of the Commerce.js SDK is that we can tie the `total_unique_items` property to our cart icon to either show a number or the plain black cart.  
-
-```javascript
-// *** Nav.js ***
-
-const iconDisplay = () => {
-
-    if (props.cart && props.cart.total_unique_items > 0) {
-        return(
-            <Label color='green' >
-                <Icon name='shopping cart' size='big'/>
-                {props.cart.total_unique_items}
-            </Label>
-        )
+    if (!discountCode) {
+        setNoDiscountCode(true)
+        setInvalidDiscountCode(false)
     } else {
-        return (
-            <Icon name='shopping cart' size='large'/>
-        )
-    }
-}
-```
-
-We have a function here that returns some JSX depending on the value of `props.cart.total_unique_items`.  Semantic UI (react) has a `<Modal />` component that we will use to display our cart modal.  There's a trigger attribute that takes a JSX element that when clicked will pop up the modal.  We now just pass our `iconDisplay()` function to the trigger.  
-
-```javascript
-// *** Nav.js ***
-
-<Modal trigger={iconDisplay()} className='cart-model' closeIcon>
-    <CartModal cart={props.cart} />
-</Modal>
-```
-
-As you can see we're also passing the cart object as a prop to our `<CartModal />` component that will be used later to display any items/products that are in the cart.  In our `<CartModal />` component we will have more logic based on the value of `props.cart.total_unique_items`.  
-
-*It's important to distinct between `total_items` and `total_unique_items`, we only care about the ***unique*** items because those are the items that get displayed.*
-
-Let's take a look at our `<CartModal />` component and setup what will get displayed if the `total_unique_items` is zero: 
-
-```javascript
-// *** CartModal.js ***
-
-{props.cart && props.cart.total_unique_items > 0 ? (
-    <>
-        //This is what we will display if there are any items/products 
-        //in our cart
-    </>
-) 
-:
-(
-    // This is our Modal when there are ZERO items/products in our cart
-
-    <>
-        <Modal.Header>Seities Apparel Cart</Modal.Header>
-        <Modal.Content image>
-            <Image wrapped size='huge' src={cartImg} />
-            <Modal.Description>
-                <Header>Your Cart is currently Empty</Header>
-                <p>
-                    It would make you very happy if you added an item to the cart
-                </p>
-            </Modal.Description>
-        </Modal.Content>
-    </>
-)}
-```
-
-![](src/img/empty-cart.JPG)
-
-
-### STEP 4. Listing Items/Products in Cart:
-
-Now it's time to add code so that we can display any items/products in our cart.  We will create another component `<CartItems />` that will be used to render our data.  If you recall we've been passing our cart object in state - but for OUR items, we only need data about each item.  The Commerce.js SDK wonderfully provides all necessary data within the `line_items` property.  Take a look: 
-
-![](src/img/line-items.JPG)
-
-In order to make sure we're listing all items in our cart we need to map over the `line_items` property and send each `item` down to our `<CartItems />` component. 
-
-```javascript
-// *** CartModal.js ***
-
-{props.cart && props.cart.total_unique_items > 0 ? (
-    <>
-        <Item.Group divided>
-            {props.cart.line_items.map(item => (
-                <Item key={item.id}>
-                    <CartItems item={item}/>
-                </Item>
-            ))}
-        </Item.Group>
-    </>
-)
-```
-
-Now that we have gone a level deeper in our cart object (`line_items`) - within our `<CartItems />` component we can access data associated with each item.  
-
-![](src/img/item.JPG)
-
-Let's take a look at our `<CartItems />` component and see how we're displaying and rendering item information: 
-
-```javascript
-return (
-    // *** CartItems.js ***
-
-    <>
-        <Item.Image size='tiny' src={props.item.media.source} />
-        <Item.Content verticalAlign='middle'>
-            <Item.Header>{props.item.name}</Item.Header>
-            <Item.Meta>
-                <span>{props.item.variants[0].option_name}</span>
-            </Item.Meta>
-            <Item.Extra className='item-total'>
-                <Header floated='right'>${props.item.line_total.formatted_with_symbol}</Header>
-            </Item.Extra>
-        </Item.Content>
-    </>
-);
-```
-
-As you can see we're just grabbing the necessary data from the props object that correlates to traditional data you will see when looking at shopping cart on an eCommerce website.  
-
-![](src/img/cart-items1.JPG)
-
-### STEP 5. Add Empty Cart Button:
-
-Now that we have our cart logic complete and rendering our items, let's add a button that will be used to empty our entire cart! For this we will reference our pattern: 
-
-> we add an action button - write a function to handle said action, then pass that function to the component that needs it
-
-#### Add Action Button
-    
-The user only needs to empty the cart if there are items present - so we will be adding our button in the same place that we're mapping over the `line_items` property.  
-
-```javascript
-// *** CartModal.js ***
-
-{props.cart && props.cart.total_unique_items > 0 ? (
-    <>
-        <Item.Group divided>
-            {props.cart.line_items.map(item => (
-                <Item key={item.id}>
-                    <CartItems item={item}/>
-                </Item>
-            ))}
-        </Item.Group>
-
-        <Modal.Actions className='model-bottom'>
-            <Button  
-                basic 
-                negative  
-                floated='left' 
-            >
-                Empty Cart
-            </Button>
-            <Header floated='right'>{props.cart.subtotal.formatted_with_symbol}</Header>
-        </Modal.Actions>
-    </>
-)
-```
-
-#### Function to handle action (empty cart)
-
-Now we write our function in the same place where our cart object in state is located, which in our example is in the `<App />` component.  Because this is a shallow nest, we will send our function via props to the `<CartModal />` component. 
-
-```javascript
-// *** App.js ***
-
-const emptyCart = () => {
-    commerce.cart.empty()
-        .then(res => {
-            setCart(null)
-        })
-}
-
-//Passing function as prop App -> Nav
-<Nav cart={cart} emptyCart={emptyCart} />
-```
-
-```javascript
-// *** Nav.js *** Passing function as prop App -> Nav -> CartModal
-<CartModal cart={props.cart} emptyCart={props.emptyCart} />
-```
-
-```javascript
-// *** CartModal.js *** Adding function to handle click
-<Button  
-    basic 
-    negative  
-    floated='left' 
-    onClick={props.emptyCart}
->
-```
-
-
-
-This is why we want this function to live in the component where our cart object in state was created.  It makes it simple and easy to update state whenever there are any changes to the cart.  And because our state cart object is being shared across components - any updates to cart triggers a re-render.  This way our cart object is always up to date and our UI is connected to the data within the cart object. 
-
-- *You will notice we're setting our cart object to `null`. Based on how your logic is setup this could be an empty array `[]` or `undefined` ect... - this will be up to you and how you might set things up.  Because our <App /> component is retrieving a new cart each render or refresh, `null` will be overwritten.*   
-
-![](src/img/empty-cart-button.JPG)
-
-### STEP 6. Add Functionality to Increase/Decrease Quanity:
-
-Lastly, it's time to add the capability to increase/descrease the item quanity.  This is important to allow customers to adjust quanity before checkout.  Again, let's reference our pattern once more! 
-
-> add an action button - write a function to handle said action, then pass that function to the component that needs it
-
-#### Let's add the necessary buttons ... 
-
-Our buttons will be added in our `<CartItems />` component. There are many ways to present this feature, but in our example will have three elements: 
-- Minus button
-- Input
-- Add button
-
-```javascript
-    // *** CartItems.js ***
-
-return (
-    <>
-        <Item.Image size='tiny' src={props.item.media.source} />
-        <Item.Content verticalAlign='middle'>
-            <Item.Header>{props.item.name}</Item.Header>
-            <Item.Meta>
-                <span>{props.item.variants[0].option_name}</span>
-            </Item.Meta>
-
-            // New Added Elements
-            <div className='quanity-group'>
-                <Button
-                    negative 
-                    className='quan-buttons' 
-                > 
-                    <Icon name='minus' /> 
-                </Button>
-                <Input 
-                    className='input-quanity'
-                    value={props.item.quantity} 
-                />
-                <Button
-                    positive 
-                    className='quan-buttons'
-                > 
-                    <Icon name='plus' /> 
-                </Button>
-            </div>
-            <Item.Extra className='item-total'>
-                <Header floated='right'>${props.item.line_total.formatted_with_symbol}</Header>
-            </Item.Extra>
-        </Item.Content>
-    </>
-);
-```
-
-As you can see because we hardcoded the initial quanity, we just bring that value from props and set that as the input value. 
-
-``` javascript
-// *** CartItems.js ***
-
-<Input 
-    className='input-quanity'
-    value={props.item.quantity} 
-/>
-```
-Another important addition is the `line_total` which correlates to the total amount based on quanity.  
-
-```javascript
-// *** CartItems.js ***
-
-<Item.Extra className='item-total'>
-    <Header floated='right'>${props.item.line_total.formatted_with_symbol}</Header>
-</Item.Extra>
-```
-Here's a look at our cart once our new elements have been added: 
-
-![](src/img/new-elements-quanity.JPG)
-
-#### Creating Functions for each action
-
-Now that we have our buttons displaying properly, let's write the functions utilizing the Commerce.js SDK cart methods.  As mentioned we want to write these functions in the `<App />` component where our cart object in state lives. 
-
-```javascript
-// *** App.js ***
-
-const cartHelperFunctions = {
-
-    deleteItem: (lineItemId) => {
-        commerce.cart.remove(lineItemId)
-            .then(res => {
-                setCart(res.cart)
-            })
-    },
-    addQaunity: (lineItemId, newQuanity) => {
-        commerce.cart.update(lineItemId, {quantity: newQuanity})
-            .then(res => {
-                setCart(res.cart)
+        commerce.checkout.checkDiscount(tokenId, {code: discountCode})
+            .then(res => {  
+                // console.log(res, 'res from checking discount code')
+                if (!res.valid) {
+                    setInvalidDiscountCode(true)
+                } else {
+                    setInvalidDiscountCode(false)
+                    setLiveObject(res.live)
+                    setDiscountCode(null)
+                }
                 
+                setNoDiscountCode(false)
             })
-    },
-    subtractQuanity: (lineItemId, newQuanity) => {
-
-        if (newQuanity === 0) {
-            cartHelperFunctions.deleteItem(lineItemId)
-        } else {
-            commerce.cart.update(lineItemId, {quantity: newQuanity})
-                .then(res => {
-                    setCart(res.cart)
-                })
-        }
-
+            .catch(err => console.log(err))
     }
 }
 ```
 
-Since all these functions are being sent to the same component `<CartItems />` we create an object that will reference each function based on a particular key. Because of the Commerce.js SDK and the properties on the cart object, we have everything we need to call these [SDK cart methods](https://commercejs.com/docs/examples/add-to-cart.html).
+I'm using the `commerce.checkout.checkDiscount()` which takes the checkout token and the discount code.  I have a few different state triggers setup to display different message depending on different outcomes. If no discount code is entered, the customer will see - "No Discount Code Entered".  The response of the function call has a property `valid`.  You can simply setup logic based off the `res.valid`.  If `res.valid` is true then you just update the live object with the updated live object that gets returned.  
 
-We also have some extra logic in our `subtractQuanity()` function that checks if an user clicks the minus button to get to a quanity of zero.  In that case, we want to completely remove the item from our cart.  So we can just call our `deleteItem()` function along with the `lineItemId`.  
+<p align="center">
+  <img src="src/img/Guide-3/discountG.gif">
+</p>
 
-#### Passing down our functions... 
+### Step 6. Capture Checkout / Route to Thank You Page
 
-Because our `<CartItems />` component is deeply nested we're going to use a particular hook to help prevent massive prop drilling - `useContext()`.  
+Now that all the data has been validated and we're able to access said data from the `data` object that gets passed to the `onSubmit` - let's format the data and get it ready for capture.  Let's revisit earlier in the guide at the beginning before we built the form.  I mentioned the four main properties and how each property was set to another object with 'sub-properties'.  
 
-*Again, this is preference and NOT a guide on react hooks or prop drilling...*  
-
-Moving forward, in order to use [Context API](https://reactjs.org/docs/hooks-reference.html#usecontext) - we need to setup our context and export it using `createContext()`: 
-
-```
-export const CartItemsContext = React.createContext()
-```
-
-Once created we can wrap our context provider component around the component that will need the functions.  This provider component takes a value attribute that will be set to the data needed within the component tree.  
-
-The cool thing about the Context API is that whatever component is wrapped in the provider will have access to the value attribute - it acts as a broadcast to every nested component.  
+We can reference the [Commerce.js](https://commercejs.com/docs/examples/capture-checkout.html) docs again to see what the shape of our data needs to be.  It appears as though I have all the data needed except the `line_items`.  Because I'm sending the live object to our form via props - we have access to the `line_items`.  I will utilize an `useEffect` here so that I ensure every time the form is rendered, I'm getting the latest items in our cart.  
 
 ```javascript
-// *** App.js **
+// *** CheckoutForm.js ***
+useEffect(() => {
 
-<CartItemsContext.Provider value={cartHelperFunctions}>
-    <Nav cart={cart} emptyCart={emptyCart}/>
-</CartItemsContext.Provider>
+    /* 
+        Takes Line Items from props and strutures the data 
+        Object added to state   
+    */
+
+    let lineItems = {}
+
+    props.liveObject.line_items.forEach(item => {
+
+        lineItems = {
+            ...lineItems,
+            [item.id]: {
+                quantity: item.quantity,
+                variants: {
+                    [item.variants[0].variant_id]: item.variants[0].option_id
+                }
+            }
+        }
+    })
+
+    setLineItems(lineItems)
+
+}, [])
 ```
 
-As you can see, we pass the `cartHelperFunctions` object as the value. 
+I'm iterating through each item building the `line_items` property to match the SDK.  The nested object's key is the `item.id` (*`item` is each line item*) and the value is an object with `quantity` and `variants`.  Once our newly created `lineItems` object is built - I set that value in state.   
 
-Now in our `<CartItems />` component (which is deeply nested) we can access our functions by first importing our context and second, using the `useContext()` hook and initializing it with our context. 
+*** *Note *** I'm using `item.variants[0]` because as the store owner, I only created one variant.*
 
 ```
-// *** CartItems.js ***
+line_items: {
+    // Key is the line item ID for our test product
+    item_7RyWOwmK5nEa2V: {
+      quantity: 1
+      variants: {
+        // Key is the variant ID for "Color", value is the option ID for "Blue"
+        vrnt_bO6J5apWnVoEjp: 'optn_Op1YoVppylXLv9',
+        // Key is the variant ID for "Size", value is the option ID for "Small"
+        vrnt_4WJvlKpg7pwbYV: 'optn_zkK6oL99G5Xn0Q',
+      }
+    }
 
-import { CartItemsContext } from '../App'
-
-const helpFnc = useContext(CartItemsContext)
+    https://commercejs.com/docs/examples/capture-checkout.html
 ```
 
-All we need to do now is attach the proper function to an `onClick` for each button.  Further, because our data is being read from our cart object in state and the cart object is being updated with each action - our data will always reflect the correct information, how awesome!
+We now have our last piece of data needed to finalize an order and capture a checkout. Let's put all this together and complete our `onSubmit`: 
 
 ```javascript
-// *** CartItems.js ***
+// *** CheckoutForm.js ***
+const onSubmit = (data) => {
 
-<div className='quanity-group'>
-    <Button
-        negative 
-        className='quan-buttons' 
-        onClick={() => {
-            let newQuanity = props.item.quantity - 1
-            helpFnc.subtractQuanity(props.item.id, newQuanity)
-        }}
-    > 
-        <Icon name='minus' /> 
-    </Button>
-    <Input 
-        className='input-quanity'
-        value={props.item.quantity} 
-    />
-    <Button
-        positive 
-        className='quan-buttons'
-        onClick={() => {
-            let newQuanity = props.item.quantity + 1
-            helpFnc.addQaunity(props.item.id, newQuanity)
-        }}
-    > 
-        <Icon name='plus' /> 
-    </Button>
-</div>
+    /* *** 
+        Takes in all the data gathered from the Form
+        Parses the data properly to match the shape for capture
+    *** */
+
+    setProcessing(true)
+
+    let final = {}
+
+    final.line_items = lineItems
+
+    final.fulfillment = {
+        shipping_method: props.shipOption
+    }
+
+    final.customer = {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email
+    }
+
+    final.shipping = {
+        name: `${data.firstname} ${data.lastname}`,
+        street: data.street,
+        town_city: data.town_city,
+        county_state: data.county_state,
+        postal_zip_code: data.postal_zip_code,
+        country: data.country
+    }
+
+    if (!sameBilling) {
+        final.billing = {
+            name: data.billing_name,
+            street: data.billing_street,
+            town_city: data.billing_town_city,
+            county_state: data.billing_county_state,
+            postal_zip_code: data.billing_postal_zip_code,
+            country: data.billing_country
+        }
+    }
+
+    final.payment = {
+        gateway: data.gateway,
+        card: {
+            number: data.number,
+            expiry_month: data.expiry_month,
+            expiry_year: data.expiry_year,
+            cvc: data.cvc,
+            postal_zip_code: data.postal_billing_zip_code,
+        }
+    }
+
+    if (props.shipOption) {
+        commerce.checkout.capture(props.tokenId, final)
+            .then(res => {
+                // console.log(res, 'res from CAPTURING CHECKOUT!!!')
+                props.setReceipt(res)
+                localStorage.removeItem('cart-id')
+                setProcessing(false)
+            })
+            .catch(err => {
+                window.alert(err.data.error.message)
+                setProcessing(false)
+            })
+    }
+    
+}
 ```
 
-We calcuate the `newQaunity` and pass that data along with the `item.id`.  Once complete you should have full cart functionaility! 
+Because the data object has everything needed, I can build the `final` object however necessary and pass that to the `commerce.checkout.capture()`. The last trigger that determines if a capture is run is the `props.shipOption` - this Boolean toggles true/false depending on if a shipping option is selected.  
 
-![](src/img/cart-demo.gif)
+#### Route to Thank You page
 
-#### Conclusion 
+The last step is routing the customer to a Thank You Page and I built the `<CheckoutComplete />` component to handle this.  The layer of data validation comes from the Chec API.  The backend is setup to check U.S. zip codes based on the state and other error checking that comes in handy.  I set an alert box to display any messages from the backend.  If there are no errors I have a few triggers but most importantly I'll push the customer to the `<CheckoutComplete />` page. 
 
-Wheew! Let's take a step back and quickly summarize what we acommplished.  
-- used the Chec Dashboard to add variants to our product
-- setup global cart object and wrote function to add product to cart
-- made sure visually the customer can be assured an item was added to the cart
-- mapped over line items and listed the products in the cart
-- wrote function to empty cart and added button
-- wrote functions to increase/decrease quanity and added buttons 
+```javascript
+// *** CheckoutForm.js ***
+commerce.checkout.capture(props.tokenId, final)
+    .then(res => {
+        // console.log(res, 'res from CAPTURING CHECKOUT!!!')
+        props.setReceipt(res)
+        localStorage.removeItem('cart-id')
+        setProcessing(false)
+        history.push(`/order-complete/${props.tokenId}/${res.id}`)
+    })
+    .catch(err => {
+        window.alert(err.data.error.message)
+        setProcessing(false)
+    })
+```
 
-Thanks to the Commerce.js SDK and all the usefull methods/functions that come with the commerce object - **updating/refreshing/adding** to your cart becomes straighforward and easy to manage.  You setup your global state for the cart and pass that data throughout your app.  
+![](src/img/Guide-3/order-complete.JPG)
 
-If you happen to be advanced in react you can implement redux for state managment and initialize your store with the cart object.  There are many ways to design and layout your eCommerce app - but the most important factor is getting the neccessary data in order to provide a smooth user experience when selecting a product and adding to the cart.  
-
-This guide is a continuation of a previous guide:
- - [Listing Products in Catalog](https://github.com/kingmoc/product-list-cjs-react) - check that out if you're just starting out and need help with getting your products listed on the page.  
-
-[LIVE DEMO](https://seities-store-cjs-react-guide.netlify.com/)
-
-## Built With
-
-* [React.Js](https://reactjs.org/docs/getting-started.html)
-* [Semantic-UI](https://react.semantic-ui.com/)
-* [Commerce.js (SDK)](https://commercejs.com/docs/) -->
+## *** Extra *** 
+### Implementing Stripe
 
 
