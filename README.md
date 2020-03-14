@@ -138,7 +138,7 @@ This component will be used to render our component based on a few properties ..
 You will notice the [component prop](https://reacttraining.com/react-router/web/api/Route/component) which is set equal to the component that needs to rendered.  The path is what the URL will be for this route and the rest of the props are needed to be passed along to be used in the `<CheckoutContainer />` component.  Here's another route setup for our homepage:
 
 ```javascript
-c
+// *** App.js ***
 <Route exact path="/" render={props => {
     return (
         <ProductContainer 
