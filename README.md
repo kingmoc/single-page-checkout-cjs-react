@@ -101,7 +101,29 @@ I'm also adding the `cart-id` to local storage as trigger for the private route.
 
 #### Setting up your Route
 
-As previously mentioned, this is not a deep dive into React or React Router, but here's an overview on setting up some routes.  First I need to install the proper dependencies `react-router` & `react-router-dom`.  In the index.js file I need to import the BrowserRouter: 
+As previously mentioned, this is not a deep dive into React or React Router, but here's an overview on setting up some routes.  First I need to install the proper dependencies:
+
+```
+// This package provides the core routing functionality for React Router
+
+npm install react-router 
+
+    - or -
+
+yarn add react-router
+```
+
+```
+// DOM bindings for React Router.
+
+npm install react-router-dom
+
+    - or -
+
+yarn add react-router-dom
+```  
+ 
+ In the index.js file I need to import the BrowserRouter: 
 
 ```javascript
 // *** index.js ***
@@ -133,7 +155,7 @@ This component will be used to render the `<CheckoutContainer>` component based 
 />
 ```
 
-*** *Note *** `<PrivateRoute />` (**check PrivateRoute.js**) is a Higher Order Component created as sort of a middleware to allow logic to determine where a cutomer is routed*
+*** *Note *** `<PrivateRoute />` (**check PrivateRoute.js**) is a Higher Order Component created as sort of a middleware to allow logic to determine where a customer is routed*
 
 You will notice the [component prop](https://reacttraining.com/react-router/web/api/Route/component) which is set equal to the component that needs to be rendered.  The path is what the URL will be for this route, and the rest of the props are needed to be passed along to be used in the `<CheckoutContainer />` component.  Here's another route setup for the homepage:
 

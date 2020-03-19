@@ -303,7 +303,6 @@ const CheckoutForm = (props) => {
                 />
                 <Controller
                     width={4} 
-                    type='number'
                     name='postal_zip_code' 
                     label='Zip/Postal' 
                     placeholder='00000'
@@ -356,7 +355,6 @@ const CheckoutForm = (props) => {
                 />
                 <Controller
                     name='postal_billing_zip_code' 
-                    type='number'
                     max='99999'
                     label='Billing Zip' 
                     placeholder='Enter Billing Zip Code'
@@ -394,7 +392,6 @@ const CheckoutForm = (props) => {
                 <Controller 
                     width={3} 
                     name='cvc'
-                    type='number'
                     label='CVC' 
                     placeholder='123'
                     as={Form.Input}
@@ -474,7 +471,6 @@ const CheckoutForm = (props) => {
                         />
                         <Controller 
                             width={3} 
-                            type='number'
                             name='billing_postal_zip_code' 
                             label='Zip' 
                             placeholder='00000' 
