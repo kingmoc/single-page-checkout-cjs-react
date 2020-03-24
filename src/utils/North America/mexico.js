@@ -1,162 +1,130 @@
 export const mexico = [
     {
     text: "Distrito Federal",
-    key: "MX-DIF",
-    value: "Distrito Federal"
+    value: "MX-DIF",
     },
     {
     text: "Aguascalientes",
-    key: "MX-AGU",
-    value: "Aguascalientes"
+    value: "MX-AGU",
     },
     {
     text: "Baja California",
-    key: "MX-BCN",
-    value: "Baja California"
+    value: "MX-BCN",
     },
     {
     text: "Baja California Sur",
-    key: "MX-BCS",
-    value: "Baja California Sur"
+    value: "MX-BCS",
     },
     {
     text: "Campeche",
-    key: "MX-CAM",
-    value: "Campeche"
+    value: "MX-CAM",
     },
     {
     text: "Chiapas",
-    key: "MX-CHP",
-    value: "Chiapas"
+    value: "MX-CHP",
     },
     {
     text: "Chihuahua",
-    key: "MX-CHH",
-    value: "state"
+    value: "MX-CHH",
     },
     {
     text: "Coahuila",
-    key: "MX-COA",
-    value: "Coahuila"
+    value: "MX-COA",
     },
     {
     text: "Colima",
-    key: "MX-COL",
-    value: "Colima"
+    value: "MX-COL",
     },
     {
     text: "Durango",
-    key: "MX-DUR",
-    value: "Durango"
+    value: "MX-DUR",
     },
     {
     text: "Guanajuato",
-    key: "MX-GUA",
-    value: "Guanajuato"
+    value: "MX-GUA",
     },
     {
     text: "Guerrero",
-    key: "MX-GRO",
-    value: "Guerrero"
+    value: "MX-GRO",
     },
     {
     text: "Hidalgo",
-    key: "MX-HID",
-    value: "Hidalgo"
+    value: "MX-HID",
     },
     {
     text: "Jalisco",
-    key: "MX-JAL",
-    value: "Jalisco"
+    value: "MX-JAL",
     },
     {
     text: "Michoacán",
-    key: "MX-MIC",
-    value: "Michoacán"
+    value: "MX-MIC",
     },
     {
     text: "Morelos",
-    key: "MX-MOR",
-    value: "Morelos"
+    value: "MX-MOR",
     },
     {
     text: "México",
-    key: "MX-MEX",
-    value: "México"
+    value: "MX-MEX",
     },
     {
     text: "Nayarit",
-    key: "MX-NAY",
-    value: "Nayarit"
+    value: "MX-NAY",
     },
     {
     text: "Nuevo León",
-    key: "MX-NLE",
-    value: "Nuevo León"
+    value: "MX-NLE",
     },
     {
     text: "Oaxaca",
-    key: "MX-OAX",
-    value: "Oaxaca"
+    value: "MX-OAX",
     },
     {
     text: "Puebla",
-    key: "MX-PUE",
-    value: "Puebla"
+    value: "MX-PUE",
     },
     {
     text: "Querétaro",
-    key: "MX-QUE",
-    value: "Querétaro"
+    value: "MX-QUE",
     },
     {
     text: "Quintana Roo",
-    key: "MX-ROO",
-    value: "Quintana Roo"
+    value: "MX-ROO",
     },
     {
     text: "San Luis Potosí",
-    key: "MX-SLP",
-    value: "San Luis Potosí"
+    value: "MX-SLP",
     },
     {
     text: "Sinaloa",
-    key: "MX-SIN",
-    value: "Sinaloa"
+    value: "MX-SIN",
     },
     {
     text: "Sonora",
-    key: "MX-SON",
-    value: "Sonora"
+    value: "MX-SON",
     },
     {
     text: "Tabasco",
-    key: "MX-TAB",
-    value: "Tabasco"
+    value: "MX-TAB",
     },
     {
     text: "Tamaulipas",
-    key: "MX-TAM",
-    value: "Tamaulipas"
+    value: "MX-TAM",
     },
     {
     text: "Tlaxcala",
-    key: "MX-TLA",
-    value: "Tlaxcala"
+    value: "MX-TLA",
     },
     {
     text: "Veracruz",
-    key: "MX-VER",
-    value: "Veracruz"
+    value: "MX-VER",
     },
     {
     text: "Yucatán",
-    key: "MX-YUC",
-    value: "Yucatán"
+    value: "MX-YUC",
     },
     {
     text: "Zacatecas",
-    key: "MX-ZAC",
-    value: "Zacatecas"
+    value: "MX-ZAC",
     }
     ]

@@ -1,54 +1,54 @@
 export const canada = [
     {
     text: "Alberta",
-    value: "Alberta"
+    value: "AB"
     },
     {
     text: "British Columbia",
-    value: "Colombie-Britannique"
+    value: "BC"
     },
     {
     text: "Manitoba",
-    value: "Manitoba"
+    value: "MB"
     },
     {
     text: "New Brunswick",
-    value: "Nouveau-Brunswick"
+    value: "NB"
     },
     {
     text: "Newfoundland and Labrador",
-    value: "Terre-Neuve-et-Labrador"
+    value: "NL"
     },
     {
     text: "Nova Scotia",
-    value: "Nouvelle-Écosse"
+    value: "NS"
     },
     {
     text: "Ontario",
-    value: "Ontario"
+    value: "ON"
     },
     {
     text: "Prince Edward Island",
-    value: "Île-du-Prince-Édouard"
+    value: "PE"
     },
     {
     text: "Quebec",
-    value: "Québec"
+    value: "QC"
     },
     {
     text: "Saskatchewan",
-    value: "Saskatchewan"
+    value: "SK"
     },
     {
     text: "Northwest Territories",
-    value: "Territoires du Nord-Ouest"
+    value: "NT"
     },
     {
     text: "Nunavut",
-    value: "Nunavut"
+    value: "NU"
     },
     {
     text: "Yukon",
-    value: "Yukon"
+    value: "YT"
     }
     ]
