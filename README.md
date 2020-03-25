@@ -2,7 +2,7 @@
 
 This guide explains the process and procedure to capture a checkout using React.js & Commerce.js (SDK)
 
-[See live demo here.](https://seities-store-cjs-react-guide.netlify.com/)
+[Live demo for this Guide: "***Creating a single page checkout***"](https://seities-store-cjs-react-guide.netlify.com/)
 
 ****** *Note* ******
 
@@ -1068,7 +1068,7 @@ if (props.shipOption) {
 
 Once you've put all the necessary info into the form go ahead and test the Stripe payment gateway.  If successful you can check your Stripe dashboard and confirm the payment went through. 
 
-[LIVE DEMO](https://seities-store-cjs-react-guide.netlify.com/)
+[Live demo for this Guide: "***Creating a single page checkout***"](https://seities-store-cjs-react-guide.netlify.com/)
 
 <p align="center">
   <img src="src/img/Guide-3/complete-order-stripe.JPG">
