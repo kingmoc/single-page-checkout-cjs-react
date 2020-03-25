@@ -175,6 +175,9 @@ const CheckoutForm = (props) => {
                                     window.alert(err.data.error.message)
                                     setProcessing(false)
                             })
+                    } else {
+                        window.alert("Please select a shipping method!")
+                        setProcessing(false)
                     }
                 })
                 .catch(err => {
@@ -205,6 +208,9 @@ const CheckoutForm = (props) => {
                             window.alert(err.data.error.message)
                             setProcessing(false)
                     })
+            } else {
+                window.alert("Please select a shipping method!")
+                setProcessing(false)
             }
         }
     }
@@ -323,6 +329,13 @@ const CheckoutForm = (props) => {
                     type='radio'
                     value='test_gateway'
                     ref={register({ required: "Please select Payment Type" })}
+                    onChange={e => {
+                        reset({
+                            number: 4242424242424242,
+                            cvc: 123,
+                            postal_billing_zip_code: 90210
+                        })
+                    }}
                 />
                 <label htmlFor="test_gateway">Test Gateway</label>
                 <input
@@ -330,6 +343,13 @@ const CheckoutForm = (props) => {
                     type='radio'
                     value='stripe'
                     ref={register({ required: "Please select Payment Type" })}
+                    onChange={e => {
+                        reset({
+                            number: '',
+                            cvc: '',
+                            postal_billing_zip_code: ''
+                        })
+                    }}
                 />
                 <label htmlFor="stripe">Credit Card</label>
             </Form.Group>
