@@ -2,13 +2,14 @@
 
 This guide explains the process and procedure to capture a checkout using React.js & Commerce.js (SDK)
 
-[Live demo for this Guide: "***Creating a single page checkout***"](https://seities-store-cjs-react-guide.netlify.com/)
+* [Live demo for this Guide: "***Creating a single page checkout***"](https://single-page-checkout-cjs.netlify.com/)
+* [Live demo for entire integration (storefront > cart > checkout > receipt/webhook)](https://seities-store-cjs-react-guide.netlify.com/)
 
 ****** *Note* ******
 
-* *This guide is using v2 of the SDK*
-* *The Live Demo is best viewed on Desktop (**responsiveness limited**)*
-* *This is a continuation of a previous guide - [Adding products to your cart](https://github.com/kingmoc/adding-products-cart-cjs-react)*
+1. *This guide is using v2 of the SDK*
+2. *The Live Demo is best viewed on Desktop (**responsiveness limited**)*
+3. *This is a continuation of a previous guide - [Adding products to your cart](https://github.com/kingmoc/adding-products-cart-cjs-react)*
 
 **********
 
@@ -875,7 +876,15 @@ You can now capture orders for your eCommerce website! Hopefully by this point, 
 This guide is a continuation of a previous guide:
  - [Adding Products to a Cart](https://github.com/kingmoc/adding-products-cart-cjs-react) - if you're wondering how to even add products to your cart, check out this guide.   
 
-[LIVE DEMO](https://seities-store-cjs-react-guide.netlify.com/)
+If you're ready for the next step - check out the next guide: 
+
+-> [Creating a receipt and webhook notification](https://github.com/kingmoc/create-receipt-webhook-slack-notification-cjs-react)
+
+____
+
+[Live demo for this Guide: "***Creating a single page checkout***"](https://single-page-checkout-cjs.netlify.com/)
+
+[Live demo for entire integration (storefront > cart > checkout > receipt/webhook)](https://seities-store-cjs-react-guide.netlify.com/)
 
 ## Built With
 
@@ -1068,9 +1077,9 @@ if (props.shipOption) {
 
 Once you've put all the necessary info into the form go ahead and test the Stripe payment gateway.  If successful you can check your Stripe dashboard and confirm the payment went through. 
 
-[Live demo for this Guide: "***Creating a single page checkout***"](https://seities-store-cjs-react-guide.netlify.com/)
-
 <p align="center">
   <img src="src/img/Guide-3/complete-order-stripe.JPG">
 </p>
+
+
 
