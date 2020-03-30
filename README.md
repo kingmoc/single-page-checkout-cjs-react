@@ -16,7 +16,7 @@ This guide explains the process and procedure to capture a checkout using React.
 ![](src/img/Guide-3/hero-3.JPG)
 
 ## Overview
-You now have come to an important part of the eCommerce journey - payment processing and capturing an order.  And just a quick recap: I added products to the Chec Dashboard and listed them on the site, I was then able to add chosen products to the cart, and now I want those items in the cart to be processed - get customer information and finalize payment; all with Commerce.js and the SDK.  The order will then be added to your Chec dashboard along with customer info and other important data.  There's a lot of information packed in this guide, so let's dive in!   
+You now have come to an important part of the eCommerce journey - payment processing and capturing an order.  And just a quick recap: We added products to the Chec Dashboard and listed them on the site, We were then able to add chosen products to the cart, and now we want those items in the cart to be processed - get customer information and finalize payment; all with Commerce.js and the SDK.  The order will then be added to your Chec dashboard along with customer info and other important data.  There's a lot of information packed in this guide, so let's dive in!   
 
 #### This guide will cover: 
 
@@ -49,13 +49,13 @@ How to implement Stripe as a payment gatway
 
 One of the most important steps to capturing an order is determining the logistics of how you will ship your products.  You need to answer questions like: Where will I ship? How much will I charge? Will it be a flat fee to place A etc...
 
-For this example, we will have 3 shipping zones: United States, Mexico, Canada.  I will be charging a flat rate (see below) for each zone and in order to set this up, you must navigate to the ***Shipping Tab*** within your setup and click **Add Zone**
+For this example, We will have 3 shipping zones: United States, Mexico, Canada.  We will be charging a flat rate (see below) for each zone and in order to set this up, you must navigate to the ***Shipping Tab*** within your setup and click **Add Zone**
 
 <p align="center">
   <img src="src/img/Guide-3/shipping-zone.JPG">
 </p>
 
-Now that I've added the shipping zones I wish to ship to, including price - I must further add these zones to my product.  Each product can have different shipping zones, but for simplicity I'm going to add all three zones to every product in the catalog. 
+Now that you've added the shipping zones you wish to ship to, including price — you must further add these zones to your product.  Each product can have different shipping zones, but for simplicity you shhould add all three zones to every product in the catalogue. 
 
 #### Add Zone to Product
 
@@ -72,7 +72,7 @@ This is an important step and must be completed before you can capture a checkou
   <img src="src/img/Guide-3/checkout-button.JPG">
 </p>
 
-The next thing I need to do is add a checkout button to the cart modal where all my products are listed.  Adding the button is pretty straight forward, but this button will have an `onClick` which will call a function with a few triggers - one of them is routing to my checkout form.  
+The next thing you need to do is add a checkout button to the cart modal where all your products are listed.  Adding the button is pretty straight forward, but this button will have an `onClick` which will call a function with a few triggers - one of them is routing to your checkout form.  
 
 ```javascript
 // *** CartModal.js ***
@@ -96,13 +96,13 @@ const goToCheckout = e => {
 }
 ```
 
-React Router has a history object that I use here to 'push' the customer to the page of your choice.  In this case to the checkout page.  I'm also adding the `cart_id` to the URL.  The `cart_id` is needed data for important SDK helper function calls, so adding it the URL makes it easy to access in the next component.  
+React Router has a history object that you can use here to 'push' the customer to the page of your choice.  In this case to the checkout page. Next, add the `cart_id` to the URL.  The `cart_id` is needed data for important SDK helper function calls, so adding it the URL makes it easy to access in the next component.  
 
-I'm also adding the `cart-id` to local storage as trigger for the private route. Basically if there's no `cart-id` in local storage - you can't route to this page.  `props.setModalOpen(false)` is the trigger to close the modal and `props.setCheckout(true)` is the trigger to NOT show the cart icon in the Nav (*I want to hide the icon during checkout*). 
+Also, by add the `cart-id` to local storage as trigger for the private route. Basically if there's no `cart-id` in local storage - you can't route to this page.  `props.setModalOpen(false)` is the trigger to close the modal and `props.setCheckout(true)` is the trigger to NOT show the cart icon in the Nav (*You want to hide the icon during checkout*). 
 
 #### Setting up your Route
 
-As previously mentioned, this is not a deep dive into React or React Router, but here's an overview on setting up some routes.  First I need to install the proper dependencies:
+As previously mentioned, this is not a deep dive into React or React Router, but here's an overview on setting up some routes.  First you need to install the proper dependencies:
 
 ```
 // This package provides the core routing functionality for React Router
@@ -124,7 +124,7 @@ npm install react-router-dom
 yarn add react-router-dom
 ```  
  
- In the index.js file I need to import the BrowserRouter: 
+ In the index.js file you need to import the BrowserRouter: 
 
 ```javascript
 // *** index.js ***
@@ -137,7 +137,7 @@ ReactDOM.render(
 ,document.getElementById('root'));
 ```
 
-I'm wrapping the `<Router>` component around the `<App />` component so everything in my `<App />` component can access any routes I setup.  All the routes for your app will be setup in the `App />` component.  If you take a look in the `App.js` you'll notice a `Route` import: 
+Here you are wrapping the `<Router>` component around the `<App />` component so everything in your `<App />` component can access any routes I setup.  All the routes for your app will be setup in the `App />` component.  If you take a look in the `App.js` you'll notice a `Route` import: 
 
 ```
 import { Route } from 'react-router-dom'
@@ -172,13 +172,13 @@ You will notice the [component prop](https://reacttraining.com/react-router/web/
     )
 }}/>
 ```
-Because this isn't a '*Private Route*' I use the [render prop](https://reacttraining.com/react-router/web/api/Route/render-func) which takes a function and returns your component.  So anytime a customer hits the home page, they will be routed to our `<ProductContainer />` component (*component that is listing my products*).  
+Because this isn't a '*Private Route*', use the [render prop](https://reacttraining.com/react-router/web/api/Route/render-func) which takes a function and returns your component.  So anytime a customer hits the home page, they will be routed to our `<ProductContainer />` component (*component that is listing your products*).  
 
-If you recall for the checkout button I pushed the customer to this path: 
+If you recall for the checkout button we pushed the customer to this path: 
 ```
 history.push(`/checkout/${props.cart.id}`)
 ```
-And in App.js, I have a route setup to that exact path: 
+And in App.js, we have a route setup to that exact path: 
 ```
 <PrivateRoute 
     component={CheckoutContainer}
@@ -191,9 +191,9 @@ the `:id` is just a foo name that is a variable for whatever text you put there.
 
 #### The `<CheckoutContainer />` Component
 
-How you setup your React app and organize your components can vary.  I decided to have a `<CheckoutContainer />` component that will contain my form and other essential data necessary for checkout.  One of the most important features of the Commerce.js SDK is the checkout token.  The checkout token is your key or access to all the information needed to capture a checkout.  Further it has the live object which contains the most up date data in regards to items, shipping methods etc... [Read more about the Checkout Token](https://commercejs.com/docs/examples/capture-checkout.html)
+How you setup your React app and organize your components can vary. Choose to have a `<CheckoutContainer />` component that will contain your form and other essential data necessary for checkout.  One of the most important features of the Commerce.js SDK is the checkout token.  The checkout token is your key or access to all the information needed to capture a checkout.  Further it has the live object which contains the most up date data in regards to items, shipping methods etc... [Read more about the Checkout Token](https://commercejs.com/docs/examples/capture-checkout.html)
 
-In the `<CheckoutContainer />` component I will be generating the checkout token.  I will use the `commerce.checkout.generateToken()` helper function and wrap this in an `useEffect()`  - so that any time this component is loaded, I will always set the live object in state: 
+In the `<CheckoutContainer />` component you will be generating the checkout token.  You will use the `commerce.checkout.generateToken()` helper function and wrap this in an `useEffect()`  - so that any time this component is loaded, you will always set the live object in state: 
 
 ```javascript
 useEffect(() => {
@@ -215,19 +215,19 @@ useEffect(() => {
 },[])
 ```
 
-The function takes the cartId (which is retrieved from the [match object](https://reacttraining.com/react-router/web/api/match) `props.match.params.id`) and a second object that tells the type.  I grab the checkout token in the response and store that in state along with the live object.  
+The function takes the cartId (which is retrieved from the [match object](https://reacttraining.com/react-router/web/api/match) `props.match.params.id`) and a second object that tells the type.  Grab the checkout token in the response and store that in state along with the live object.  
 
-Because the live object contains so much valuable data, I can build triggers for certain UI based on the data changes.  I also send this live object to my form in order to build the `line_items` object later needed for capture.  
+Because the live object contains so much valuable data, you can build triggers for certain UI based on the data changes.  You also send this live object to your form in order to build the `line_items` object later needed for capture.  
 
 
 
-Now that my routes are setup and I'm generating my checkout token - it is time to build your form! 
+Now that these routes are setup and you can generate you checkout token - it is now time to build your form! 
 
-### Step 3. Create Form
+### Step 3. Create Checkout Form
 
 Before you create your form, it's good to determine what data is needed in order to process an order.  There are four main properties needed: **Customer** (*name, email etc...*), **Shipping** (*address, country etc...*), **Payment** (*card info, payment gateway*), **Fulfillment** (*whatever shipping method was selected*). Head over to the [docs](https://commercejs.com/docs/examples/capture-checkout.html) to get a better look at the final object you'll be sending to the Chec dashboard.   
 
-*** *Note *** There's also **Billing** but it holds the same 'sub-properties' as Shipping - so I have logic setup to only include **Billing** if the customer's billing address is different than their shipping.*
+*** *Note *** There's also **Billing** but it holds the same 'sub-properties' as Shipping - so for this example we have logic setup to only include **Billing** if the customer's billing address is different than their shipping.*
 
 Each main property is an object which contains more properties 'sub-properties' of data that needs to be collected.  Take a look! 
 
@@ -246,7 +246,7 @@ customer: {
     country: 'US',
   }
 ```
-I will be building my form using [Semantic UI](https://react.semantic-ui.com/collections/form/) components instead of the standard `<input />` element.  It is essentially the same implementation except you will see extra properties specific to the custom component provided by [Semantic UI](https://react.semantic-ui.com/).  Let's look at each main property: 
+We will be building our form using [Semantic UI](https://react.semantic-ui.com/collections/form/) components instead of the standard `<input />` element.  It is essentially the same implementation except you will see extra properties specific to the custom component provided by [Semantic UI](https://react.semantic-ui.com/).  Let's look at each main property: 
 
 #### Customer
 
@@ -344,7 +344,7 @@ export const countries = [
 ]
 ```
 
-As the store owner and for this example I already set up shipping for only three countries.  These will be the only choices a customer can choose in order to ship.  Once a customer chooses thier country it will trigger a different set of options based on that country.  In order to achieve this I compiled a list of all territories/states/provinces for each country (*see the North America folder under utils*).    
+As the store owner and for this example we have already set up shipping for only three countries.  These will be the only choices a customer can choose in order to ship.  Once a customer chooses thier country it will trigger a different set of options based on that country.  In order to achieve this I compiled a list of all territories/states/provinces for each country (*see the North America folder under utils*).    
 
 So, the options property for this dropdown ... 
 
@@ -450,7 +450,7 @@ const getCountryInfoShipping = () => {
 </Form.Group>
 ```
 
-These are all the fields needed to collect information about payment.  I had to bring in arrays (`monthOptions`, `yearOptions`) for the options props in regards to month/year card expiration.  
+These are all the fields needed to collect information about payment.  We need to bring in arrays (`monthOptions`, `yearOptions`) for the options props in regards to month/year card expiration.  
 
 #### Fufillment
 
@@ -460,9 +460,9 @@ These are all the fields needed to collect information about payment.  I had to 
 
 This is the last important piece of data you need to complete a checkout.  The customer needs to be able to select a shipping option.  The shipping option is determined by country - remember our shipping zones?  
 
-**For example:** If the customer chooses Canada as their shipping country, then we run a function with that country code in order to give a shipping option to choose from.  This option determines the price for shipping to your country. For this store - I'm charging $8 dollars flate rate to ship to Canada.
+**For example:** If the customer chooses Canada as their shipping country, then we run a function with that country code in order to give a shipping option to choose from.  This option determines the price for shipping to your country. For this store - we are charging $8 dollars flate rate to ship to Canada.
 
-Because I've separated the shipping options from the main form (*where I'm gathering all the other data*), I have to pass a function via props to our form.  This function is wrapped in a `useEffect()` and gets triggered every time a different country is selected.  
+Because we've separated the shipping options from the main form (*where we are gathering all the other data*), we have to pass a function via props to our form.  This function is wrapped in a `useEffect()` and gets triggered every time a different country is selected.  
 
 ```
 useEffect(() => {
@@ -505,7 +505,7 @@ const getShippingOptions = (countrySymbol) => {
 }
 ```
 
-This function is using the `commerce.checkout.getShippingOptions()` [helper function](https://commercejs.com/docs/overview/getting-started.html) to go and retrieve the shipping option based on the country symbol (*I pass that data in as an argument*).  The response is an array of shipping options and I'm mapping over that array in order to format the data that gets passed to the options property in the selection dropdown element. I then put that array into state for later consumption. 
+This function is using the `commerce.checkout.getShippingOptions()` [helper function](https://commercejs.com/docs/overview/getting-started.html) to go and retrieve the shipping option based on the country symbol (*pass that data in as an argument*).  The response is an array of shipping options and we're mapping over that array in order to format the data that gets passed to the options property in the selection dropdown element. You then put that array into state for later consumption. 
 
 Here's a look at the code for the dropdown: 
 
@@ -519,7 +519,7 @@ Here's a look at the code for the dropdown:
 />
 ```
 
-The last part is that I want to apply the shipping option to the cart total and update the total cost.  The Commerce.js SDK makes this easy because they provide a function that when given a shipping option and a checkout token, you get back an updated live object.  All you have to do is update state with the new live object and all of the data depending on that object will get updated.  
+Finally, you want to apply the shipping option to the cart total and update the total cost.  The Commerce.js SDK makes this easy because they provide a function that when given a shipping option and a checkout token, you get back an updated live object.  All you have to do is update state with the new live object and all of the data depending on that object will get updated.  
 
 ```javascript
 // *** CheckoutContainer.js ***
@@ -544,7 +544,7 @@ const handleDropDownShipping = (e, {value, options}) => {
 }
 ```
 
-As you can see I'm using `commerce.checkout.checkShippingOption()` helper function and passing it the checkout token and an object with the `shipping_option_id` and `country`.  As mentioned the response contains an updated live object so I update state and also set the `shipping_option_id` - (`setShipOption(value)`) in state so that info can be sent to the Chec dashboard for when I finally capture the checkout. 
+Here, you can use the `commerce.checkout.checkShippingOption()` helper function and pass it to the checkout token as an object with the `shipping_option_id` and `country`.  As mentioned the response contains an updated live object so you need to update state and also set the `shipping_option_id` - (`setShipOption(value)`) in state so that info can be sent to the Chec dashboard for when you finally capture the checkout. 
 
 <p align="center">
   <img src="src/img/Guide-3/shippingG.gif">
@@ -556,11 +556,11 @@ Yay! You have built your form and made sure you have all the fields necessary to
 
 Typically speaking at this point you would need to apply some `onChange` events to each of your inputs and dropdowns.  Then build a function that takes the input data and stores it into state.  After that you would probable write an `onSubmit` function to grab all the data in state and finally do something with it.  Within your `onSubmit` function is where you would handle errors and things of that nature.  
 
-I am going to make your programming lives easier by using a third party library called [React Hook Form](https://react-hook-form.com/api/).  This is a form validation and form error handling library that makes the handling of data much easier.  When configured properly you don't have to apply change handler functions to each input and manually program errors in the event field data is missing.  
+Let's  make your programming lives easier by using a third party library called [React Hook Form](https://react-hook-form.com/api/).  This is a form validation and form error handling library that makes the handling of data much easier.  When configured properly you don't have to apply change handler functions to each input and manually program errors in the event field data is missing.  
 
-This is very important for UX (user experience) that the customer is informed visually if they left something blank or typed something incorrectly. I want to apply as much data validation as possible before sending data to be processed by Chec dashboard.  When programming our `onSubmit`function we know the data coming in has been validated.  
+This is very important for UX (user experience) that the customer is informed visually if they left something blank or typed something incorrectly. We want to apply as much data validation as possible before sending data to be processed by Chec dashboard.  When programming our `onSubmit`function we know the data coming in has been validated.  
 
-Let's add the dependency `npm install react-hook-form` or `yarn add react-hook-form`.  I will now bring in a component and a hook from the library: 
+Let's add the dependency `npm install react-hook-form` or `yarn add react-hook-form`.  Bring in a component and a hook from the library: 
 
 ```
 import { useForm, Controller } from 'react-hook-form'
@@ -593,7 +593,7 @@ Let's take a look at some inputs to see how we configured them using `react-hook
 />
 ```
 
-My input for getting firstname data now looks like this.  I used the `<Controller />` component from the library along with a few extra props.  The rules prop allows me to set rules for this input.  It takes an object with a property `required`.  It sets this input to be required and if left empty, an error gets added to the errors object based on the name.  Semantic UI has an error prop we can add and easily attach errors to any field left empty. 
+Our input for getting firstname data now looks like this.  We used the `<Controller />` component from the library along with a few extra props.  The rules prop allows me to set rules for this input.  It takes an object with a property `required`.  It sets this input to be required and if left empty, an error gets added to the errors object based on the name.  Semantic UI has an error prop we can add and easily attach errors to any field left empty. 
 
 ![](src/img/Guide-3/customer-error.JPG)
 
@@ -621,13 +621,13 @@ It's a similiar process except we have the `onChange` that returns the value sel
 
 #### The `handleSubmit()` function
 
-So I've wired up each input using the third party `react-hook-form` and made sure all the errors work properly.  Here comes the real power within the library if you recall the handleSubmit property that was brought in from the `useForm()` hook: 
+So you've wired up each input using the third party `react-hook-form` and made sure all the errors work properly.  Here comes the real power within the library if you recall the handleSubmit property that was brought in from the `useForm()` hook: 
 
 ```
 const { register, **handleSubmit**, errors, control, reset } = useForm()
 ```
 
-I will now pass my `onSubmit` function to the `react-hook-form`'s `handleSubmit()`: 
+You will now pass the `onSubmit` function to the `react-hook-form`'s `handleSubmit()`: 
 
 ```
 <Form className='checkout-form' onSubmit={handleSubmit(onSubmit)} loading={processing}>
@@ -647,7 +647,7 @@ As you can see there's an argument `data` that we will log and get some eyes on 
   <img src="src/img/Guide-3/data-object.JPG">
 </p>
 
-We have all the data from the form!  The convenient part is that this function never runs unless all input meets validation.  I set required to all inputs so this function ONLY runs if nothing is left blank.  All that is left is formatting the data properly to match how the Commerce.js SDK will process our data.  
+We have all the data from the form!  The convenient part is that this function never runs unless all input meets validation.  Let's set required to all inputs so this function ONLY runs if nothing is left blank.  All that is left is formatting the data properly to match how the Commerce.js SDK will process our data.  
 
 ### Step. 5 Handling Discount Code
 
@@ -655,7 +655,7 @@ One last quick procedure (*before we capture*) and that is handling a discount c
 
 ![](src/img/Guide-3/discount.JPG)
 
-I will be setting one discount code and it will be **LUCKY**.  You have the option to apply the code to a particular product, but to keep it simple I will add the code to all products.  I now need to add an input and a button: 
+We'll be setting a discount code to work at the checkout, **LUCKY**.  You have the option to apply the code to a particular product, but to keep it simple add the code to all products. Now add an input and a button: 
 
 ```javascript
 <form className='discount-code' onSubmit={handleDiscountClick}>
@@ -695,7 +695,7 @@ const handleDiscountClick = (e) => {
 }
 ```
 
-I'm using the `commerce.checkout.checkDiscount()` which takes the checkout token and the discount code.  I have a few different state triggers setup to display different message depending on different outcomes. If no discount code is entered, the customer will see - "No Discount Code Entered".  The response of the function call has a property `valid`.  You can simply setup logic based off the `res.valid`.  If `res.valid` is true then you just update the live object with the updated live object that gets returned.  
+We're using the `commerce.checkout.checkDiscount()` which takes the checkout token and the discount code.  We have a few different state triggers setup to display different message depending on different outcomes. If no discount code is entered, the customer will see - "No Discount Code Entered".  The response of the function call has a property `valid`.  You can simply setup logic based off the `res.valid`.  If `res.valid` is true then you just update the live object with the updated live object that gets returned.  
 
 <p align="center">
   <img src="src/img/Guide-3/discountG.gif">
@@ -703,9 +703,9 @@ I'm using the `commerce.checkout.checkDiscount()` which takes the checkout token
 
 ### Step 6. Capture Checkout / Route to Thank You Page
 
-Now that all the data has been validated and we're able to access said data from the `data` object that gets passed to the `onSubmit` - let's format the data and get it ready for capture.  I want to revisit earlier in the guide before we built the form.  I mentioned the four main properties and how each property was set to another object with 'sub-properties'.  
+Now that all the data has been validated and we're able to access said data from the `data` object that gets passed to the `onSubmit` - let's format the data and get it ready for capture.  Let's revisit earlier in the guide before we built the form.  Here, we covered the four main properties and how each property was set to another object with 'sub-properties'.  
 
-You can reference the [Commerce.js](https://commercejs.com/docs/examples/capture-checkout.html) docs again to see what the shape of our data needs to be.  It appears as though I have all the data needed except the `line_items`.  Because I'm sending the live object to our form via props - we have access to the `line_items`.  I will utilize an `useEffect` here so that I ensure every time the form is rendered, I'm getting the latest items in our cart.  
+You can reference the [Commerce.js](https://commercejs.com/docs/examples/capture-checkout.html) docs again to see what the shape of our data needs to be.  It appears as though we have all the data needed except the `line_items`.  Because you're sending the live object to our form via props - we have access to the `line_items`.  Utilize an `useEffect` here so that you ensure every time the form is rendered, you are getting the latest items in the cart.  
 
 ```javascript
 // *** CheckoutForm.js ***
@@ -736,9 +736,9 @@ useEffect(() => {
 }, [])
 ```
 
-I'm iterating through each item building the `line_items` property to match the SDK.  The nested object's key is the `item.id` (*`item` is each line item*) and the value is an object with `quantity` and `variants`.  Once our newly created `lineItems` object is built - I set that value in state.   
+You want to interate through each item building the `line_items` property to match the SDK.  The nested object's key is the `item.id` (*`item` is each line item*) and the value is an object with `quantity` and `variants`.  Once our newly created `lineItems` object is built - set that value in state.   
 
-*** *Note *** I'm using `item.variants[0]` because as the store owner, I only created one variant.*
+*** *Note *** We are using `item.variants[0]` because as the store owner, we only created one variant.*
 
 ```
 line_items: {
@@ -830,11 +830,11 @@ const onSubmit = (data) => {
 }
 ```
 
-Because the data object has everything needed, I can build the `final` object however necessary and pass that to the `commerce.checkout.capture()`. The last trigger that determines if a capture is run is the **`props.shipOption`** - this Boolean toggles true/false depending on if a shipping option is selected. So if there's no shipping option selected - the customer will NOT be able to complete their order.  
+Because the data object has everything needed, you can build the `final` object however necessary and pass that to the `commerce.checkout.capture()`. The last trigger that determines if a capture is run is the **`props.shipOption`** - this Boolean toggles true/false depending on if a shipping option is selected. So if there's no shipping option selected - the customer will NOT be able to complete their order.  
 
 #### Route to Thank You page
 
-The last step is routing the customer to a Thank You Page and I built the `<CheckoutComplete />` component to handle this.  One of the last layers of data validation comes from the Chec API.  The backend is setup to check U.S. zip codes based on the state and other error checking that comes in handy.  I set an alert box to display any messages from the backend.  If there are no errors I have a few triggers, but most importantly I'm pushing the customer to the `<CheckoutComplete />` page. 
+The last step is routing the customer to a simple Thank You Page (see next guide on creating a rceipt), of which the `<CheckoutComplete />` component handles.  One of the last layers of data validation comes from the Chec API.  The backend is setup to check U.S. zip codes based on the state and other error checking that comes in handy.  Set an alert box to display any messages from the backend.  If there are no errors you have just a few triggers, but most importantly remember to push the customer to the `<CheckoutComplete />` page. 
 
 ```javascript
 // *** CheckoutForm.js ***
@@ -901,7 +901,7 @@ So you've tested your payment gateway and now you want to try using Stripe to pr
 
 ### Step 1. Get Stripe Acount
 
-This is pretty obvious but you need a personal stripe account in order to use their system.  Head over to [Stripe](https://dashboard.stripe.com/register) and setup an account.  Once your account is created, the most important information needed is your API keys. Stripe has two keys: **Publishable & Secret** - they both come with a *test* version and *live* version.  Make sure to only copy the **TEST** keys in that you do not want to accept live payments during testing.  
+This is pretty obvious but you need a personal Stripe account in order to use their system.  Head over to [Stripe](https://dashboard.stripe.com/register) and setup an account.  Once your account is created, the most important information needed is your API keys. Stripe has two keys: **Publishable & Secret** - they both come with a *test* version and *live* version.  Make sure to only copy the **TEST** keys in that you do not want to accept live payments during testing.  
 
 <p align="center">
   <img src="src/img/Guide-3/test-keys.JPG">
@@ -920,11 +920,11 @@ Navigate to your Chec dashboard and in the settings, click **payment gateways**.
 
 This particular step can be done many ways.  The end goal is to [create a card token](https://stripe.com/docs/api/tokens/create_card).  Stripe essentially encapsulates sensitive data into what they call [tokens](https://stripe.com/docs/api/tokens).  These tokens can then be sent to stripe in order to process that information.  
 
-As mentioned creating such tokens can be done a few different ways (such as using Stripe's SDK) - but I'm going to use my Stripe API keys to connect directly to the token endpoint. Once we're able to successfully retrieve a token (which will hold the customer's card information) - I will send that token instead of the card info with the capture ...
+As mentioned creating such tokens can be done a few different ways (such as using Stripe's SDK) - Here, let's use the Stripe API keys to connect directly to the token endpoint. Once we're able to successfully retrieve a token (which will hold the customer's card information) - we will send that token instead of the card info with the capture ...
 
 #### Axios
 
-I need a way to make an API call and [axios](https://www.npmjs.com/package/axios) is the preferred method.  Because I already know the endpoint I need to access is not open, I built an `axiosWithAuth()` function to hold sensitive data needed to make an API call to Stripe: 
+You need a way to make an API call and [axios](https://www.npmjs.com/package/axios) is the preferred method.  Because you already know the endpoint you need to access is not open, you need to build an `axiosWithAuth()` function to hold sensitive data needed to make an API call to Stripe: 
 
 ```javascript
 // *** axiosWithAuth.js ***
@@ -943,9 +943,9 @@ export const axiosWithAuth = () => {
 }   
 ```
 
-Stripe uses a ***bearer*** token (*your secret key from Stripe*) and also something else called `application/x-www-form-urlencoded`. This means I won't be able to send `json` objects in the request body.  Don't worry - you an use [this library](https://www.npmjs.com/package/qs) to create the proper formatting for your data.  
+Stripe uses a ***bearer*** token (*your secret key from Stripe*) and also something else called `application/x-www-form-urlencoded`. This means you won't be able to send `json` objects in the request body.  Don't worry - you can use [this library](https://www.npmjs.com/package/qs) to create the proper formatting for your data.  
 
-Now that I have everything setup: `baseURL`, `token`, and `Content-Type` - let's grab the data needed for Stripe, send it to the proper endpoint, retrieve the token: 
+Now that you have everything setup: `baseURL`, `token`, and `Content-Type` - let's grab the data needed for Stripe, send it to the proper endpoint, retrieve the token: 
 
 ```javascript
 // *** CheckoutForm.js ***
@@ -964,9 +964,9 @@ axiosWithAuth().post('/tokens', qs.stringify({card: stripInfo}))
     }
 ```
 
-If you recall, I already have the data needed (*from the `data` object*) to create the token.  The property names are slightly different which is why I'm creating a new object `stripInfo`. I'm using the [qs](https://www.npmjs.com/package/qs) library to format the data into `application/x-www-form-urlencoded`.  Stripe requires the data to be nested in the card property.  
+If you recall, we already have the data needed (*from the `data` object*) to create the token.  The property names are slightly different which is why we are creating a new object `stripInfo`, using the [qs](https://www.npmjs.com/package/qs) library to format the data into `application/x-www-form-urlencoded`.  Stripe requires the data to be nested in the card property.  
 
-I `console.log` the `res` to make sure I'm getting back the information needed.  
+You need to `console.log` the `res` to make sure you are getting back the information needed.  
 
 ```
 {
@@ -1008,13 +1008,13 @@ The token id is the first property listed and that is what I will send along wit
 
 ### Step 4. Setting up Stripe logic
 
-Now that I'm offering two different payment methods, I need to reflect that to the user.  I will have two radio buttons that the customer can choose for payment processing.  
+Now that you're offering two different payment methods at the checkout (this could also be credit / debit card and PayPal), you need to reflect that to the user.  Create two radio buttons that the customer can choose for payment processing.  
 
 <p align="center">
   <img src="src/img/Guide-3/radio-pay.JPG">
 </p>
 
-Based on the `data` object, I know the value of the radio button will be attached to `data.gateway` (*that is the name set for those input types*).  Whichever the customer selects will determine what happens next.  If **Credit Card** is chosen, that means I need to get the token and perform a capture with the token info - same with **Test Gateway**.  
+Based on the `data` object, you know the value of the radio button will be attached to `data.gateway` (*that is the name set for those input types*).  Whichever the customer selects will determine what happens next.  If **Credit Card** is chosen, that means you need to get the token and perform a capture with the token info - same with **Test Gateway**.  
 
 ```javascript
 // *** CheckoutForm.js ***
@@ -1054,7 +1054,7 @@ If successful, you update the `payment` object with only the token (***no need f
 
 ### Step 5. Capture Checkout
 
-Everything is setup to complete and finalize the customer's order.  I'm getting the token, I've setup the logic, now just complete the checkout.  We can proceed in similar fashion as before in that all I need to do is include the proper **`final`** object depending on which option the customer chooses. 
+Everything is setup to complete and finalize the customer's order.  You're getting the token, you've setup the logic, now just complete the checkout.  We can proceed in similar fashion as before in that all you need to do is include the proper **`final`** object depending on which option the customer chooses. 
 
 ```javascript
 // *** CheckoutForm.js ***
